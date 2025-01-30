@@ -13,28 +13,28 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-@Table(name = "usuario")
-@Entity(name = "usuario")
-
+@Table(name = "users")
+@Entity(name = "users")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class User implements UserDetails{
+public class User implements UserDetails {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     private String login;
-    private String email;
     private String password;
-    private String nome;
-    private String cnpj;
-    private String pacote_name;;
     private UserRole role;
+
+    public User(String login, String password, UserRole role){
+        this.login = login;
+        this.password = password;
+        this.role = role;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
