@@ -3,7 +3,7 @@ package com.JBFinancial.JBFinancial_backend.user;
 
 public enum UserRole {
     ADMIN("admin"),
-    USER("usuario");
+    USER("user");
 
     private String role;
 
@@ -11,7 +11,7 @@ public enum UserRole {
         this.role = role;
     }
 
-   public String getRole() {
-       return role;
-   }
+    public String getRole(){
+        return role;
+    }
 }
