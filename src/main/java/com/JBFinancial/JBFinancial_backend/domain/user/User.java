@@ -1,4 +1,4 @@
-package com.JBFinancial.JBFinancial_backend.user;
+package com.JBFinancial.JBFinancial_backend.domain.user;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -8,10 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 @Table(name = "users")
 @Entity(name = "users")

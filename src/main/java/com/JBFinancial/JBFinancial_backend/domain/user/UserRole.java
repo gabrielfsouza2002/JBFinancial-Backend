@@ -1,4 +1,4 @@
-package com.JBFinancial.JBFinancial_backend.user;
+package com.JBFinancial.JBFinancial_backend.domain.user;
 
 
 public enum UserRole {

@@ -1,4 +1,4 @@
-package com.JBFinancial.JBFinancial_backend.food;
+package com.JBFinancial.JBFinancial_backend.domain.food;
 
 public record FoodResponseDTO(Long id, String title, String image, Integer price) {
     public FoodResponseDTO(Food food){

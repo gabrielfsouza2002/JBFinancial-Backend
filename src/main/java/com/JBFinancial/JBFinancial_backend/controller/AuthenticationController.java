@@ -1,9 +1,11 @@
 package com.JBFinancial.JBFinancial_backend.controller;
 
+import com.JBFinancial.JBFinancial_backend.Infra.security.TokenService;
+import com.JBFinancial.JBFinancial_backend.domain.user.LoginResponseDTO;
 import com.JBFinancial.JBFinancial_backend.repositories.UserRepository;
-import com.JBFinancial.JBFinancial_backend.user.AuthenticationDTO;
-import com.JBFinancial.JBFinancial_backend.user.RegisterDTO;
-import com.JBFinancial.JBFinancial_backend.user.User;
+import com.JBFinancial.JBFinancial_backend.domain.user.AuthenticationDTO;
+import com.JBFinancial.JBFinancial_backend.domain.user.RegisterDTO;
+import com.JBFinancial.JBFinancial_backend.domain.user.User;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +24,17 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserRepository repository;
-
+    @Autowired
+    private TokenService tokenService;
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
-        return ResponseEntity.ok().build();
+
+        var token = tokenService.generateToken((User) auth.getPrincipal());
+
+        return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
     @PostMapping("/register")
