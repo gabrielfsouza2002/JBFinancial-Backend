@@ -1,9 +1,9 @@
 package com.JBFinancial.JBFinancial_backend.controller;
 
-import com.JBFinancial.JBFinancial_backend.food.Food;
-import com.JBFinancial.JBFinancial_backend.food.FoodRepository;
-import com.JBFinancial.JBFinancial_backend.food.FoodRequestDTO;
-import com.JBFinancial.JBFinancial_backend.food.FoodResponseDTO;
+import com.JBFinancial.JBFinancial_backend.domain.food.Food;
+import com.JBFinancial.JBFinancial_backend.domain.food.FoodRepository;
+import com.JBFinancial.JBFinancial_backend.domain.food.FoodRequestDTO;
+import com.JBFinancial.JBFinancial_backend.domain.food.FoodResponseDTO;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
