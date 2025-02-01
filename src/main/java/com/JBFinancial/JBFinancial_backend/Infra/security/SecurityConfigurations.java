@@ -31,10 +31,15 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/food").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/profile").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/profile").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/conta/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/conta").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/conta/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/conta/**").authenticated()
                         .anyRequest().authenticated()
                 )
-                .cors(withDefaults()) // Use withDefaults() para habilitar CORS
+                .cors(withDefaults())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
