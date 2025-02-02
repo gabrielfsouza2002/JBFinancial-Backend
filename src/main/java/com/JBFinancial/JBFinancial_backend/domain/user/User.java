@@ -1,7 +1,8 @@
+// src/main/java/com/JBFinancial/JBFinancial_backend/domain/user/User.java
+
 package com.JBFinancial.JBFinancial_backend.domain.user;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -32,19 +33,20 @@ public class User implements UserDetails {
     private String cnpj;
     private String name;
     private UserRole role;
+    private Float saldoInicial = 0.0f; // Novo campo
 
+    @JsonIgnore
     @Transient
-    @JsonSerialize(contentUsing = GrantedAuthoritySerializer.class)
-    @JsonDeserialize(contentUsing = GrantedAuthorityDeserializer.class)
     private Collection<? extends GrantedAuthority> authorities;
 
-    public User(String login, String password, String email, String cnpj, String name, UserRole role) {
+    public User(String login, String password, String email, String cnpj, String name, UserRole role, Float saldoInicial) {
         this.login = login;
         this.password = password;
         this.email = email;
         this.cnpj = cnpj;
         this.name = name;
         this.role = role;
+        this.saldoInicial = saldoInicial != null ? saldoInicial : 0.0f;
     }
 
     @Override

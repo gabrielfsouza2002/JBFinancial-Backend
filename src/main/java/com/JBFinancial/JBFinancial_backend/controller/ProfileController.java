@@ -1,3 +1,5 @@
+// src/main/java/com/JBFinancial/JBFinancial_backend/controller/ProfileController.java
+
 package com.JBFinancial.JBFinancial_backend.controller;
 
 import com.JBFinancial.JBFinancial_backend.domain.user.User;
@@ -6,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-// src/main/java/com/JBFinancial/JBFinancial_backend/controller/ProfileController.java
 @RestController
 @RequestMapping("/profile")
 public class ProfileController {
@@ -32,6 +33,7 @@ public class ProfileController {
         user.setEmail(updatedUser.getEmail());
         user.setCnpj(updatedUser.getCnpj());
         user.setName(updatedUser.getName());
+        user.setSaldoInicial(updatedUser.getSaldoInicial());
         userRepository.save(user);
         return ResponseEntity.ok(user);
     }

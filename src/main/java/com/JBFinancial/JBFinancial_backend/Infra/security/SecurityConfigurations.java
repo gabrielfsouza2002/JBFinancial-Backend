@@ -37,6 +37,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/conta").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/conta/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/conta/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/base").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/base/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .cors(withDefaults())

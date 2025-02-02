@@ -1,3 +1,5 @@
+// src/main/java/com/JBFinancial/JBFinancial_backend/controller/AuthenticationController.java
+
 package com.JBFinancial.JBFinancial_backend.controller;
 
 import com.JBFinancial.JBFinancial_backend.Infra.security.TokenService;
@@ -39,7 +41,7 @@ public class AuthenticationController {
         if(this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.login(), encryptedPassword, data.email(), data.cnpj(), data.name(), data.role());
+        User newUser = new User(data.login(), encryptedPassword, data.email(), data.cnpj(), data.name(), data.role(), data.saldoInicial());
 
         this.repository.save(newUser);
 

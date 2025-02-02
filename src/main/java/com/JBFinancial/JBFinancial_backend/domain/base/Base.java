@@ -1,3 +1,5 @@
+// src/main/java/com/JBFinancial/JBFinancial_backend/domain/base/Base.java
+
 package com.JBFinancial.JBFinancial_backend.domain.base;
 
 import jakarta.persistence.*;
@@ -19,8 +21,8 @@ import java.util.UUID;
 @EqualsAndHashCode(of = "id")
 public class Base {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "user_id", nullable = false)
     private String userId;
@@ -43,13 +45,16 @@ public class Base {
     @Column(name = "descricao", nullable = false)
     private String descricao;
 
+    @Column(name = "debt_cred", nullable = false)
+    private Boolean debtCred; // Nova coluna
+
     public Base(BaseRequestDTO data) {
-        this.userId = data.userId();
         this.contaId = data.contaId();
         this.valor = data.valor();
         this.impactaCaixa = data.impactaCaixa();
         this.impactaDre = data.impactaDre();
         this.descricao = data.descricao();
+        this.debtCred = data.debtCred();
     }
 
     @PrePersist

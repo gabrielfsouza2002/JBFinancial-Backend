@@ -1,13 +1,22 @@
+// src/main/java/com/JBFinancial/JBFinancial_backend/controller/BaseController.java
+
 package com.JBFinancial.JBFinancial_backend.controller;
 
+import com.JBFinancial.JBFinancial_backend.Services.FinancialSummaryDTO;
+import com.JBFinancial.JBFinancial_backend.Services.FinancialSummaryService;
 import com.JBFinancial.JBFinancial_backend.domain.base.*;
+import com.JBFinancial.JBFinancial_backend.domain.conta.Conta;
 import com.JBFinancial.JBFinancial_backend.repositories.BaseRepository;
+import com.JBFinancial.JBFinancial_backend.repositories.ContaRepository;
+import com.JBFinancial.JBFinancial_backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("base")
@@ -16,11 +25,27 @@ public class BaseController {
     @Autowired
     private BaseRepository repository;
 
+    @Autowired
+    private ContaRepository contaRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private FinancialSummaryService financialSummaryService;
+
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
     public void saveBase(@RequestBody BaseRequestDTO data){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+        Conta conta = contaRepository.findById(data.contaId())
+                .orElseThrow(() -> new RuntimeException("Conta not found"));
+        if (!conta.getUserId().equals(userId)) {
+            throw new RuntimeException("User not authorized to use this account");
+        }
+
         Base baseData = new Base(data);
         baseData.setUserId(userId);
         repository.save(baseData);
@@ -36,25 +61,85 @@ public class BaseController {
     @GetMapping("/user")
     public List<BaseResponseDTO> getBasesByUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
         return repository.findByUserId(userId).stream().map(BaseResponseDTO::new).toList();
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PutMapping("/{id}")
-    public void updateBase(@PathVariable Long id, @RequestBody BaseRequestDTO data){
+    public void updateBase(@PathVariable UUID id, @RequestBody BaseRequestDTO data){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+
         Base baseData = repository.findById(id).orElseThrow(() -> new RuntimeException("Base not found"));
+        Conta conta = contaRepository.findById(data.contaId())
+                .orElseThrow(() -> new RuntimeException("Conta not found"));
+        if (!conta.getUserId().equals(userId)) {
+            throw new RuntimeException("User not authorized to use this account");
+        }
+
         baseData.setContaId(data.contaId());
         baseData.setValor(data.valor());
         baseData.setImpactaCaixa(data.impactaCaixa());
         baseData.setImpactaDre(data.impactaDre());
         baseData.setDescricao(data.descricao());
+        baseData.setDebtCred(data.debtCred());
         repository.save(baseData);
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @DeleteMapping("/{id}")
-    public void deleteBase(@PathVariable Long id){
+    public void deleteBase(@PathVariable UUID id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+
+        Base baseData = repository.findById(id).orElseThrow(() -> new RuntimeException("Base not found"));
+        Conta conta = contaRepository.findById(baseData.getContaId())
+                .orElseThrow(() -> new RuntimeException("Conta not found"));
+        if (!conta.getUserId().equals(userId)) {
+            throw new RuntimeException("User not authorized to use this account");
+        }
+
         repository.deleteById(id);
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/sum-entradas")
+    public Double getSumEntradas() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+        return repository.sumEntradas(userId);
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/sum-saidas")
+    public Double getSumSaidas() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+
+        return repository.sumSaidas(userId);
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/by-numero-conta-prefix")
+    public List<BaseResponseDTO> getByNumeroContaPrefix(@RequestParam String prefix) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+        return repository.findByNumeroContaPrefix(userId, prefix).stream().map(BaseResponseDTO::new).toList();
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/financial-summary")
+    public FinancialSummaryDTO getFinancialSummary() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+        return financialSummaryService.calculateFinancialSummary(userId);
     }
 }

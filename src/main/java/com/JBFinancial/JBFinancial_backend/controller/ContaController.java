@@ -1,3 +1,5 @@
+// src/main/java/com/JBFinancial/JBFinancial_backend/controller/ContaController.java
+
 package com.JBFinancial.JBFinancial_backend.controller;
 
 import com.JBFinancial.JBFinancial_backend.domain.conta.*;
@@ -32,6 +34,10 @@ public class ContaController {
 
         if (contaRepository.existsByNumeroConta(data.numeroConta())) {
             throw new RuntimeException("Número da conta já existe.");
+        }
+
+        if (contaRepository.existsByNome(data.nome())) {
+            throw new RuntimeException("Nome da conta já existe.");
         }
 
         Conta contaData = new Conta(data);
@@ -70,10 +76,13 @@ public class ContaController {
             throw new RuntimeException("Número da conta já existe.");
         }
 
+        if (contaRepository.existsByNomeAndIdNot(data.nome(), id)) {
+            throw new RuntimeException("Nome da conta já existe.");
+        }
+
         contaData.setTipo(data.tipo());
         contaData.setNumeroConta(data.numeroConta());
         contaData.setNome(data.nome());
-        contaData.setValor(data.valor());
         contaRepository.save(contaData);
     }
 
