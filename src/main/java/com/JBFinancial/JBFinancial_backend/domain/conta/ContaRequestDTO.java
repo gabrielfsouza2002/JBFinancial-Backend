@@ -1,3 +1,5 @@
+// src/main/java/com/JBFinancial/JBFinancial_backend/domain/conta/ContaRequestDTO.java
+
 package com.JBFinancial.JBFinancial_backend.domain.conta;
 
 import jakarta.validation.constraints.NotBlank;
@@ -16,8 +18,6 @@ public record ContaRequestDTO(
 
         @NotBlank(message = "O nome é obrigatório")
         @Size(max = 20, message = "O nome deve ter no máximo 20 caracteres")
-        String nome,
-
-        Double valor
+        String nome
 ) {
 }

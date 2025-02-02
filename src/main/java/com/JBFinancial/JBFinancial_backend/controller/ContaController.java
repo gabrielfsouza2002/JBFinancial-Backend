@@ -1,3 +1,5 @@
+// src/main/java/com/JBFinancial/JBFinancial_backend/controller/ContaController.java
+
 package com.JBFinancial.JBFinancial_backend.controller;
 
 import com.JBFinancial.JBFinancial_backend.domain.conta.*;
@@ -73,7 +75,6 @@ public class ContaController {
         contaData.setTipo(data.tipo());
         contaData.setNumeroConta(data.numeroConta());
         contaData.setNome(data.nome());
-        contaData.setValor(data.valor());
         contaRepository.save(contaData);
     }
 

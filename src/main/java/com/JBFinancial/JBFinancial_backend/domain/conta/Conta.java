@@ -1,3 +1,5 @@
+// src/main/java/com/JBFinancial/JBFinancial_backend/domain/conta/Conta.java
+
 package com.JBFinancial.JBFinancial_backend.domain.conta;
 
 import jakarta.persistence.*;
@@ -33,14 +35,10 @@ public class Conta {
     @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "valor", nullable = false)
-    private Double valor;
-
     public Conta(ContaRequestDTO data) {
         this.userId = data.userId();
         this.tipo = data.tipo();
         this.numeroConta = data.numeroConta();
         this.nome = data.nome();
-        this.valor = data.valor();
     }
 }

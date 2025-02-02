@@ -8,7 +8,6 @@ CREATE TABLE contas (
     tipo TEXT NOT NULL,
     numero_conta TEXT NOT NULL,
     nome TEXT NOT NULL,
-    valor DOUBLE PRECISION NOT NULL,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id),
     CONSTRAINT unique_user_conta UNIQUE (user_id, numero_conta)
 );
