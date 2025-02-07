@@ -1,10 +1,7 @@
-// src/main/java/com/JBFinancial/JBFinancial_backend/domain/base/BaseRequestDTO.java
-
 package com.JBFinancial.JBFinancial_backend.domain.base;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
-
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record BaseRequestDTO(
@@ -18,7 +15,8 @@ public record BaseRequestDTO(
         @NotNull(message = "A descrição é obrigatória")
         String descricao,
         @NotNull(message = "Debt/Cred é obrigatório")
-        Boolean debtCred
+        Boolean debtCred,
+        LocalDateTime data // Campo opcional para definir a data manualmente
 ) {
     public BaseRequestDTO {
         if (debtCred && valor < 0) {

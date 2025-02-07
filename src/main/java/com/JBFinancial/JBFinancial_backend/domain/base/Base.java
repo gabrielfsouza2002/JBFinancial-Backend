@@ -1,5 +1,3 @@
-// src/main/java/com/JBFinancial/JBFinancial_backend/domain/base/Base.java
-
 package com.JBFinancial.JBFinancial_backend.domain.base;
 
 import jakarta.persistence.*;
@@ -46,7 +44,7 @@ public class Base {
     private String descricao;
 
     @Column(name = "debt_cred", nullable = false)
-    private Boolean debtCred; // Nova coluna
+    private Boolean debtCred;
 
     public Base(BaseRequestDTO data) {
         this.contaId = data.contaId();
@@ -55,10 +53,6 @@ public class Base {
         this.impactaDre = data.impactaDre();
         this.descricao = data.descricao();
         this.debtCred = data.debtCred();
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        data = LocalDateTime.now();
+        this.data = data.data() != null ? data.data() : LocalDateTime.now();
     }
 }

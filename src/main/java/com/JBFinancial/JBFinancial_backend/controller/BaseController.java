@@ -2,6 +2,7 @@
 
 package com.JBFinancial.JBFinancial_backend.controller;
 
+import com.JBFinancial.JBFinancial_backend.Services.DreService;
 import com.JBFinancial.JBFinancial_backend.Services.FinancialSummaryDTO;
 import com.JBFinancial.JBFinancial_backend.Services.FinancialSummaryService;
 import com.JBFinancial.JBFinancial_backend.domain.base.*;
@@ -29,6 +30,9 @@ public class BaseController {
     private ContaRepository contaRepository;
 
     @Autowired
+    private DreService dreService;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -48,8 +52,15 @@ public class BaseController {
 
         Base baseData = new Base(data);
         baseData.setUserId(userId);
+        System.out.println("data no baseController: "+ baseData.getData());
         repository.save(baseData);
+
+        // Chama o método calculateAndSaveDre após salvar o novo lançamento, se impacta_dre for true
+        if (data.impactaDre()) {
+            dreService.calculateAndSaveDre(userId, data.contaId(), baseData.getData(), data.valor());
+        }
     }
+
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping

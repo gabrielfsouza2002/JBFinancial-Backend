@@ -31,14 +31,8 @@ public class SecurityFilter extends OncePerRequestFilter {
                 if (user != null) {
                     var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                } else {
-                    System.out.println("User not found for login: " + login);
                 }
-            } else {
-                System.out.println("Invalid token: " + token);
             }
-        } else {
-            System.out.println("Token is null");
         }
         filterChain.doFilter(request, response);
     }
@@ -46,7 +40,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     private String recoverToken(HttpServletRequest request){
         var authHeader = request.getHeader("Authorization");
         if(authHeader == null) {
-            System.out.println("Authorization header is missing");
+            //System.out.println("Authorization header is missing");
             return null;
         }
         return authHeader.replace("Bearer ", "");
