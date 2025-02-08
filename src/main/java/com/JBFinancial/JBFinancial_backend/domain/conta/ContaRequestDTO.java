@@ -17,7 +17,7 @@ public record ContaRequestDTO(
         String numeroConta,
 
         @NotBlank(message = "O nome é obrigatório")
-        @Size(max = 20, message = "O nome deve ter no máximo 20 caracteres")
+        @Size(max = 30, message = "O nome deve ter no máximo 30 caracteres")
         String nome
 ) {
 }

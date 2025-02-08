@@ -2,7 +2,7 @@ package com.JBFinancial.JBFinancial_backend.Services;
 
 import com.JBFinancial.JBFinancial_backend.domain.base.Base;
 import com.JBFinancial.JBFinancial_backend.domain.dre.Dre;
-import com.JBFinancial.JBFinancial_backend.domain.dre.DreResponseDTO;
+
 import com.JBFinancial.JBFinancial_backend.repositories.BaseRepository;
 import com.JBFinancial.JBFinancial_backend.repositories.ContaRepository;
 import com.JBFinancial.JBFinancial_backend.repositories.DreRepository;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -121,8 +122,7 @@ public class DreService {
         dreRepository.save(dre);
     }
 
-    public List<DreResponseDTO> calculateAnnualTotals(String userId, int year) {
-
+    public List<Dre> calculateAnnualTotals(String userId, int year) {
         UUID uniqueId = generateUniqueId(userId, year);
         List<Dre> dreEntries = dreRepository.findByUserId(userId).stream()
                 .filter(dre -> dre.getYear() == year)
@@ -172,30 +172,29 @@ public class DreService {
             margemLiquida = (lucroLiquidoDoExercicio / receitaLiquida) * 100;
         }
 
-        DreResponseDTO annualTotals = new DreResponseDTO(
-                uniqueId, // Use the generated unique ID
-                userId,
-                year,
-                0, // Month is not applicable for annual totals
-                custoOperacional,
-                propriedades,
-                bustech,
-                marketing,
-                financasEJuridico,
-                custosOperacionaisDiretos,
-                impostosSimplesNacional,
-                outrosImpostosETaxas,
-                receitaLiquida,
-                custoDosBensServicosVendidos,
-                despesasReceitasOperacionais,
-                despesasFinanceiras,
-                resultadoBruto,
-                ebitda,
-                lucroLiquidoDoExercicio,
-                margemBruta,
-                margemEbitda,
-                margemLiquida
-        );
+        Dre annualTotals = new Dre();
+        annualTotals.setId(uniqueId);
+        annualTotals.setUserId(userId);
+        annualTotals.setYear(year);
+        annualTotals.setMonth(0); // Month is not applicable for annual totals
+        annualTotals.setCustoOperacional(custoOperacional);
+        annualTotals.setPropriedades(propriedades);
+        annualTotals.setBustech(bustech);
+        annualTotals.setMarketing(marketing);
+        annualTotals.setFinancasEJuridico(financasEJuridico);
+        annualTotals.setCustosOperacionaisDiretos(custosOperacionaisDiretos);
+        annualTotals.setImpostosSimplesNacional(impostosSimplesNacional);
+        annualTotals.setOutrosImpostosETaxas(outrosImpostosETaxas);
+        annualTotals.setReceitaLiquida(receitaLiquida);
+        annualTotals.setCustoDosBensServicosVendidos(custoDosBensServicosVendidos);
+        annualTotals.setDespesasReceitasOperacionais(despesasReceitasOperacionais);
+        annualTotals.setDespesasFinanceiras(despesasFinanceiras);
+        annualTotals.setResultadoBruto(resultadoBruto);
+        annualTotals.setEbitda(ebitda);
+        annualTotals.setLucroLiquidoDoExercicio(lucroLiquidoDoExercicio);
+        annualTotals.setMargemBruta(margemBruta);
+        annualTotals.setMargemEbitda(margemEbitda);
+        annualTotals.setMargemLiquida(margemLiquida);
 
         return List.of(annualTotals);
     }
@@ -206,4 +205,83 @@ public class DreService {
                 .mapToDouble(Map.Entry::getValue)
                 .sum();
     }
+
+    public List<Dre> getDreByUserIdAndYearAndMonth(String userId, int year, int month) {
+        return dreRepository.findByUserIdAndYearAndMonth(userId, year, month)
+                .map(List::of)
+                .orElse(List.of());
+    }
+
+    public List<List<Object>> getDreMatrix(String userId, int year) {
+        List<List<Object>> matrix = new ArrayList<>();
+        matrix.add(List.of("", "Total no Ano", "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"));
+
+        String[] categories = {
+                "Custo Operacional", "Propriedades", "Bustech", "Marketing", "Finanças e Jurídico",
+                "Custos Operacionais Diretos", "Impostos Simples Nacional", "Outros Impostos e Taxas",
+                "Receita Líquida", "Custo dos Bens/Serviços Vendidos", "Despesas/Receitas Operacionais",
+                "Despesas Financeiras", "Resultado Bruto", "EBITDA", "Lucro Líquido do Exercício",
+                "Margem Bruta (%)", "Margem EBITDA (%)", "Margem Líquida (%)"
+        };
+
+        for (String category : categories) {
+            List<Object> row = new ArrayList<>();
+            row.add(category);
+            for (int i = 0; i < 13; i++) {
+                row.add("-");
+            }
+            matrix.add(row);
+        }
+
+        // Fill the matrix with annual data
+        List<Dre> annualData = calculateAnnualTotals(userId, year);
+        if (!annualData.isEmpty()) {
+            Dre annualDre = annualData.get(0);
+            fillRowWithDreData(matrix, annualDre, 1);
+        }
+
+        // Fill the matrix with monthly data
+        for (int month = 1; month <= 12; month++) {
+            List<Dre> monthlyData = getDreByUserIdAndYearAndMonth(userId, year, month);
+            if (!monthlyData.isEmpty()) {
+                Dre monthlyDre = monthlyData.get(0);
+                fillRowWithDreData(matrix, monthlyDre, month + 1);
+            }
+        }
+
+        return matrix;
+    }
+
+    private void fillRowWithDreData(List<List<Object>> matrix, Dre dre, int columnIndex) {
+        matrix.get(1).set(columnIndex, formatValue(dre.getCustoOperacional()));
+        matrix.get(2).set(columnIndex, formatValue(dre.getPropriedades()));
+        matrix.get(3).set(columnIndex, formatValue(dre.getBustech()));
+        matrix.get(4).set(columnIndex, formatValue(dre.getMarketing()));
+        matrix.get(5).set(columnIndex, formatValue(dre.getFinancasEJuridico()));
+        matrix.get(6).set(columnIndex, formatValue(dre.getCustosOperacionaisDiretos()));
+        matrix.get(7).set(columnIndex, formatValue(dre.getImpostosSimplesNacional()));
+        matrix.get(8).set(columnIndex, formatValue(dre.getOutrosImpostosETaxas()));
+        matrix.get(9).set(columnIndex, formatValue(dre.getReceitaLiquida()));
+        matrix.get(10).set(columnIndex, formatValue(dre.getCustoDosBensServicosVendidos()));
+        matrix.get(11).set(columnIndex, formatValue(dre.getDespesasReceitasOperacionais()));
+        matrix.get(12).set(columnIndex, formatValue(dre.getDespesasFinanceiras()));
+        matrix.get(13).set(columnIndex, formatValue(dre.getResultadoBruto()));
+        matrix.get(14).set(columnIndex, formatValue(dre.getEbitda()));
+        matrix.get(15).set(columnIndex, formatValue(dre.getLucroLiquidoDoExercicio()));
+        matrix.get(16).set(columnIndex, formatValue(dre.getMargemBruta(), true));
+        matrix.get(17).set(columnIndex, formatValue(dre.getMargemEbitda(), true));
+        matrix.get(18).set(columnIndex, formatValue(dre.getMargemLiquida(), true));
+    }
+
+    private String formatValue(double value) {
+        return value == 0 ? "-" : String.valueOf(value);
+    }
+
+    private String formatValue(double value, boolean isPercentage) {
+        if (value == 0) {
+            return "-";
+        }
+        return isPercentage ? String.valueOf(value) + "%" : String.valueOf(value);
+    }
+
 }

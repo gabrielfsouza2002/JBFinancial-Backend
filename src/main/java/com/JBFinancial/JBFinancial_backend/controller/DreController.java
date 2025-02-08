@@ -48,10 +48,12 @@ public class DreController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
-        return dreService.calculateAnnualTotals(userId, year);
+        return dreService.calculateAnnualTotals(userId, year).stream()
+                .map(DreResponseDTO::new)
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("/user/{year}")
+    @GetMapping("/{year}")
     public List<DreResponseDTO> getDreByYear(@PathVariable int year) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -62,7 +64,7 @@ public class DreController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/user/{year}/{month}")
+    @GetMapping("/{year}/{month}")
     public List<DreResponseDTO> getDreByYearAndMonth(@PathVariable int year, @PathVariable int month) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -71,5 +73,13 @@ public class DreController {
                 .filter(dre -> dre.getYear() == year && dre.getMonth() == month)
                 .map(DreResponseDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/matrix/{year}")
+    public List<List<Object>> getDreMatrix(@PathVariable("year") int year) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+        return dreService.getDreMatrix(userId, year);
     }
 }

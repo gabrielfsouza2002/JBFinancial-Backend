@@ -32,11 +32,11 @@ public class ContaController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
 
-        if (contaRepository.existsByNumeroConta(data.numeroConta())) {
+        if (contaRepository.existsByNumeroContaAndUserId(data.numeroConta(), userId)) {
             throw new RuntimeException("Número da conta já existe.");
         }
 
-        if (contaRepository.existsByNome(data.nome())) {
+        if (contaRepository.existsByNomeAndUserId(data.nome(), userId)) {
             throw new RuntimeException("Nome da conta já existe.");
         }
 
@@ -72,11 +72,11 @@ public class ContaController {
             throw new RuntimeException("User not authorized to update this account");
         }
 
-        if (contaRepository.existsByNumeroContaAndIdNot(data.numeroConta(), id)) {
+        if (contaRepository.existsByNumeroContaAndIdNotAndUserId(data.numeroConta(), id, userId)) {
             throw new RuntimeException("Número da conta já existe.");
         }
 
-        if (contaRepository.existsByNomeAndIdNot(data.nome(), id)) {
+        if (contaRepository.existsByNomeAndIdNotAndUserId(data.nome(), id, userId)) {
             throw new RuntimeException("Nome da conta já existe.");
         }
 

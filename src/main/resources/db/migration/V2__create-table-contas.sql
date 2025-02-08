@@ -1,5 +1,7 @@
 -- src/main/resources/db/migration/V2__create-table-contas.sql
 
+-- src/main/resources/db/migration/V2__create-table-contas.sql
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE contas (
@@ -7,7 +9,8 @@ CREATE TABLE contas (
     user_id TEXT NOT NULL,
     tipo TEXT NOT NULL,
     numero_conta TEXT NOT NULL,
-    nome TEXT NOT NULL UNIQUE,
+    nome TEXT NOT NULL,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id),
-    CONSTRAINT unique_user_conta UNIQUE (user_id, numero_conta)
+    CONSTRAINT unique_user_conta UNIQUE (user_id, numero_conta),
+    CONSTRAINT unique_user_nome UNIQUE (user_id, nome)
 );

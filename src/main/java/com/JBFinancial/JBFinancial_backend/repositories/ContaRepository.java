@@ -10,8 +10,8 @@ import java.util.UUID;
 
 public interface ContaRepository extends JpaRepository<Conta, UUID> {
     List<Conta> findByUserId(String userId);
-    boolean existsByNumeroConta(String numeroConta);
-    boolean existsByNumeroContaAndIdNot(String numeroConta, UUID id);
-    boolean existsByNome(String nome); // Novo método
-    boolean existsByNomeAndIdNot(String nome, UUID id); // Novo método
+    boolean existsByNumeroContaAndUserId(String numeroConta, String userId);
+    boolean existsByNumeroContaAndIdNotAndUserId(String numeroConta, UUID id, String userId);
+    boolean existsByNomeAndUserId(String nome, String userId);
+    boolean existsByNomeAndIdNotAndUserId(String nome, UUID id, String userId);
 }

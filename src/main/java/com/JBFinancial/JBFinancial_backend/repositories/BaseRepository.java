@@ -20,5 +20,8 @@ public interface BaseRepository extends JpaRepository<Base, UUID> {
     @Query("SELECT b FROM base b WHERE b.userId = :userId AND b.contaId IN (SELECT c.id FROM contas c WHERE c.numeroConta LIKE :numeroContaPrefix%)")
     List<Base> findByNumeroContaPrefix(String userId, String numeroContaPrefix);
 
+    @Query("SELECT DISTINCT YEAR(b.data) FROM base b WHERE b.userId = :userId ORDER BY YEAR(b.data)")
+    List<Integer> findDistinctYearsByUserId(String userId);
+
     // Add other queries as needed
 }

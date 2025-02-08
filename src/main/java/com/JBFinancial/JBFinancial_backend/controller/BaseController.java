@@ -55,7 +55,6 @@ public class BaseController {
         System.out.println("data no baseController: "+ baseData.getData());
         repository.save(baseData);
 
-        // Chama o método calculateAndSaveDre após salvar o novo lançamento, se impacta_dre for true
         if (data.impactaDre()) {
             dreService.calculateAndSaveDre(userId, data.contaId(), baseData.getData(), data.valor());
         }
@@ -117,33 +116,6 @@ public class BaseController {
         repository.deleteById(id);
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @GetMapping("/sum-entradas")
-    public Double getSumEntradas() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
-        return repository.sumEntradas(userId);
-    }
-
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @GetMapping("/sum-saidas")
-    public Double getSumSaidas() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
-
-        return repository.sumSaidas(userId);
-    }
-
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @GetMapping("/by-numero-conta-prefix")
-    public List<BaseResponseDTO> getByNumeroContaPrefix(@RequestParam String prefix) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
-        return repository.findByNumeroContaPrefix(userId, prefix).stream().map(BaseResponseDTO::new).toList();
-    }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/financial-summary")
@@ -152,5 +124,14 @@ public class BaseController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
         return financialSummaryService.calculateFinancialSummary(userId);
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/years")
+    public List<Integer> getDistinctYearsByUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+        return repository.findDistinctYearsByUserId(userId);
     }
 }
