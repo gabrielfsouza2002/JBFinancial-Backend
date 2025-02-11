@@ -3,6 +3,7 @@ package com.JBFinancial.JBFinancial_backend.Services;
 import com.JBFinancial.JBFinancial_backend.domain.base.Base;
 import com.JBFinancial.JBFinancial_backend.domain.dre.Dre;
 
+import java.text.DecimalFormat;
 import com.JBFinancial.JBFinancial_backend.repositories.BaseRepository;
 import com.JBFinancial.JBFinancial_backend.repositories.ContaRepository;
 import com.JBFinancial.JBFinancial_backend.repositories.DreRepository;
@@ -53,11 +54,11 @@ public class DreService {
         return UUID.nameUUIDFromBytes(uniqueString.getBytes(StandardCharsets.UTF_8));
     }
 
+    private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
     public void calculateAndSaveDre(String userId, UUID contaId, LocalDateTime date, Double valor) {
         int year = date.getYear();
         int month = date.getMonthValue();
-
-        System.out.println("Data DREService: " + year + "/" + month);
 
         List<Base> baseEntries = baseRepository.findByUserId(userId).stream()
                 .filter(base -> base.getData().getYear() == year && base.getData().getMonthValue() == month)
@@ -281,7 +282,8 @@ public class DreService {
         if (value == 0) {
             return "-";
         }
-        return isPercentage ? String.valueOf(value) + "%" : String.valueOf(value);
+        String formattedValue = decimalFormat.format(value);
+        return isPercentage ? formattedValue + "%" : formattedValue;
     }
 
 }

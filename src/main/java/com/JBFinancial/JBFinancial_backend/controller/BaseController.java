@@ -2,6 +2,7 @@
 
 package com.JBFinancial.JBFinancial_backend.controller;
 
+import com.JBFinancial.JBFinancial_backend.Services.BaseService;
 import com.JBFinancial.JBFinancial_backend.Services.DreService;
 import com.JBFinancial.JBFinancial_backend.Services.FinancialSummaryDTO;
 import com.JBFinancial.JBFinancial_backend.Services.FinancialSummaryService;
@@ -33,6 +34,9 @@ public class BaseController {
     private DreService dreService;
 
     @Autowired
+    private BaseService baseService;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -52,7 +56,6 @@ public class BaseController {
 
         Base baseData = new Base(data);
         baseData.setUserId(userId);
-        System.out.println("data no baseController: "+ baseData.getData());
         repository.save(baseData);
 
         if (data.impactaDre()) {
@@ -116,7 +119,6 @@ public class BaseController {
         repository.deleteById(id);
     }
 
-
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/financial-summary")
     public FinancialSummaryDTO getFinancialSummary() {
@@ -133,5 +135,32 @@ public class BaseController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
         return repository.findDistinctYearsByUserId(userId);
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/base-today")
+    public List<BaseResponseDTO> getBasesTodayByUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+        return repository.findByUserIdAndToday(userId).stream().map(BaseResponseDTO::new).toList();
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/matrix")
+    public List<List<Object>> getBaseMatrix() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+        return baseService.getBaseMatrix(userId);
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/summary-mes/{year}/{ic}")
+    public List<List<Object>> getMonthlySummaryByUser(@PathVariable int year, @PathVariable boolean ic) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+        return baseService.getMonthlySummaryByUser(year, ic, userId);
     }
 }
