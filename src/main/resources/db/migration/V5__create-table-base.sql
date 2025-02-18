@@ -11,7 +11,7 @@ CREATE TABLE base (
     impacta_caixa BOOLEAN NOT NULL,
     impacta_dre BOOLEAN NOT NULL,
     descricao TEXT NOT NULL,
-    debt_cred BOOLEAN NOT NULL, -- Nova coluna
+    debt_cred BOOLEAN NOT NULL,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id),
     CONSTRAINT fk_conta FOREIGN KEY (conta_id) REFERENCES contas(id)
 );

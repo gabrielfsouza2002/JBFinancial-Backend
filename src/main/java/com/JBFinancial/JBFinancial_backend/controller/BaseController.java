@@ -57,10 +57,6 @@ public class BaseController {
         Base baseData = new Base(data);
         baseData.setUserId(userId);
         repository.save(baseData);
-
-        if (data.impactaDre()) {
-            dreService.calculateAndSaveDre(userId, data.contaId(), baseData.getData(), data.valor());
-        }
     }
 
 
@@ -118,6 +114,7 @@ public class BaseController {
 
         repository.deleteById(id);
     }
+
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/financial-summary")

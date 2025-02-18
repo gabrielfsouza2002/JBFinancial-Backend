@@ -1,6 +1,4 @@
-// src/main/java/com/JBFinancial/JBFinancial_backend/domain/subgrupo/Subgrupo.java
-
-package com.JBFinancial.JBFinancial_backend.subgrupo;
+package com.JBFinancial.JBFinancial_backend.domain.subgrupo;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,4 +29,7 @@ public class Subgrupo {
 
     @Column(name = "id_grupo", nullable = false)
     private UUID idGrupo;
+
+    @Column(name = "digito_subgrupo", nullable = false)
+    private String digitoSubgrupo;
 }

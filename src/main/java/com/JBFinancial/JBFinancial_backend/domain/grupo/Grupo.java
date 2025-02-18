@@ -1,5 +1,3 @@
-// src/main/java/com/JBFinancial/JBFinancial_backend/domain/grupo/Grupo.java
-
 package com.JBFinancial.JBFinancial_backend.domain.grupo;
 
 import jakarta.persistence.*;
@@ -25,4 +23,7 @@ public class Grupo {
 
     @Column(name = "nome", nullable = false)
     private String nome;
+
+    @Column(name = "digito_grupo", nullable = false)
+    private String digitoGrupo;
 }

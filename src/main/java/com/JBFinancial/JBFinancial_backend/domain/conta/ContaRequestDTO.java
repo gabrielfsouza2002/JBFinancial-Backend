@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.util.UUID;
+
 public record ContaRequestDTO(
         String userId,
         @NotBlank(message = "O tipo é obrigatório")
@@ -18,6 +20,9 @@ public record ContaRequestDTO(
 
         @NotBlank(message = "O nome é obrigatório")
         @Size(max = 30, message = "O nome deve ter no máximo 30 caracteres")
-        String nome
+        String nome,
+
+        UUID idGrupo,
+        UUID idSubgrupo
 ) {
 }

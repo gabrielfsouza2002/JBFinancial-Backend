@@ -35,10 +35,18 @@ public class Conta {
     @Column(name = "nome", nullable = false)
     private String nome;
 
+    @Column(name = "id_grupo", nullable = false)
+    private UUID idGrupo;
+
+    @Column(name = "id_subgrupo", nullable = false)
+    private UUID idSubgrupo;
+
     public Conta(ContaRequestDTO data) {
         this.userId = data.userId();
         this.tipo = data.tipo();
         this.numeroConta = data.numeroConta();
         this.nome = data.nome();
+        this.idGrupo = data.idGrupo();
+        this.idSubgrupo = data.idSubgrupo();
     }
 }

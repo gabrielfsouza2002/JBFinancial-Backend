@@ -83,6 +83,8 @@ public class ContaController {
         contaData.setTipo(data.tipo());
         contaData.setNumeroConta(data.numeroConta());
         contaData.setNome(data.nome());
+        contaData.setIdGrupo(data.idGrupo());
+        contaData.setIdSubgrupo(data.idSubgrupo());
         contaRepository.save(contaData);
     }
 

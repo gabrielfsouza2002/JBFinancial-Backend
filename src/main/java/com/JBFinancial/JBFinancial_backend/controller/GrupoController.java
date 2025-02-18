@@ -21,6 +21,7 @@ public class GrupoController {
     public void saveGrupo(@Valid @RequestBody GrupoRequestDTO data) {
         Grupo grupo = new Grupo();
         grupo.setNome(data.nome());
+        grupo.setDigitoGrupo(generateNextGrupoDigit());
         grupoRepository.save(grupo);
     }
 
@@ -42,5 +43,10 @@ public class GrupoController {
     @DeleteMapping("/{id}")
     public void deleteGrupo(@PathVariable UUID id) {
         grupoRepository.deleteById(id);
+    }
+
+    private String generateNextGrupoDigit() {
+        long count = grupoRepository.count();
+        return String.valueOf((count + 1) % 10);
     }
 }
