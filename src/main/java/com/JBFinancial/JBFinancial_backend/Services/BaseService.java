@@ -3,6 +3,7 @@
 package com.JBFinancial.JBFinancial_backend.Services;
 
 import com.JBFinancial.JBFinancial_backend.domain.base.Base;
+import com.JBFinancial.JBFinancial_backend.domain.base.BaseMatrixResponseDTO;
 import com.JBFinancial.JBFinancial_backend.repositories.BaseRepository;
 import com.JBFinancial.JBFinancial_backend.repositories.ContaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,30 +29,51 @@ public class BaseService {
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    public List<List<Object>> getBaseMatrix(String userId) {
+    public List<BaseMatrixResponseDTO> getBaseMatrix(String userId) {
         List<Base> baseEntries = baseRepository.findByUserId(userId);
-        List<List<Object>> matrix = new ArrayList<>();
-        matrix.add(List.of("Ano", "Mês", "Data", "Horário", "Nome da Conta", "Valor", "Crédito/Debito", "Impacta Caixa", "Impacta DRE", "Descrição"));
+        List<BaseMatrixResponseDTO> responseList = new ArrayList<>();
 
         for (Base base : baseEntries) {
             String contaNome = contaRepository.findById(base.getContaId()).orElseThrow().getNome();
+            String tipoConta = contaRepository.findById(base.getContaId()).orElseThrow().getTipo();
             String valor = decimalFormat.format(base.getValor());
             String creditoDebito = base.getDebtCred() ? "credito" : "debito";
-            matrix.add(List.of(
-                    base.getData().getYear(),
-                    base.getData().getMonthValue(),
-                    base.getData().format(dateFormatter),
-                    base.getData().format(timeFormatter),
-                    contaNome,
-                    valor,
-                    creditoDebito,
-                    base.getImpactaCaixa() ? "Sim" : "Não",
-                    base.getImpactaDre() ? "Sim" : "Não",
-                    base.getDescricao()
-            ));
+            String impactaCaixa = base.getImpactaCaixa() ? "Sim" : "Não";
+            String impactaDre = base.getImpactaDre() ? "Sim" : "Não";
+
+            BaseMatrixResponseDTO response = new BaseMatrixResponseDTO(base, contaNome, tipoConta, valor, creditoDebito, impactaCaixa, impactaDre);
+            responseList.add(response);
         }
 
-        return matrix;
+        return responseList;
+    }
+
+    public static class BaseResponse {
+        private int ano;
+        private int mes;
+        private String data;
+        private String horario;
+        private String nomeDaConta;
+        private String valor;
+        private String creditoDebito;
+        private String impactaCaixa;
+        private String impactaDre;
+        private String descricao;
+
+        public BaseResponse(int ano, int mes, String data, String horario, String nomeDaConta, String valor, String creditoDebito, String impactaCaixa, String impactaDre, String descricao) {
+            this.ano = ano;
+            this.mes = mes;
+            this.data = data;
+            this.horario = horario;
+            this.nomeDaConta = nomeDaConta;
+            this.valor = valor;
+            this.creditoDebito = creditoDebito;
+            this.impactaCaixa = impactaCaixa;
+            this.impactaDre = impactaDre;
+            this.descricao = descricao;
+        }
+
+        // Getters and setters
     }
 
     public List<List<Object>> getMonthlySummaryByUser(int year, boolean impactaCaixa, String userId) {

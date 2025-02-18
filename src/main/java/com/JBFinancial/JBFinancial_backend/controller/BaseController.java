@@ -148,7 +148,7 @@ public class BaseController {
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/matrix")
-    public List<List<Object>> getBaseMatrix() {
+    public List<BaseMatrixResponseDTO> getBaseMatrix() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
