@@ -11,7 +11,7 @@ import java.util.UUID;
 public record ContaRequestDTO(
         String userId,
         @NotBlank(message = "O tipo é obrigatório")
-        @Pattern(regexp = "Entrada|Saída", message = "Tipo de conta inválido. Deve ser 'Entrada' ou 'Saída'.")
+        @Pattern(regexp = "Entrada|Saida", message = "Tipo de conta inválido. Deve ser 'Entrada' ou 'Saida'.")
         String tipo,
 
         @NotBlank(message = "O número da conta é obrigatório")

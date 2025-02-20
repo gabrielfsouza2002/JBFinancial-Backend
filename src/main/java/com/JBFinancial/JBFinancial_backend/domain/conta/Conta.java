@@ -41,11 +41,19 @@ public class Conta {
     @Column(name = "id_subgrupo", nullable = false)
     private UUID idSubgrupo;
 
+    @PrePersist
+    @PreUpdate
+    private void convertToUpperCase() {
+        this.tipo = this.tipo.toUpperCase();
+        this.numeroConta = this.numeroConta.toUpperCase();
+        this.nome = this.nome.toUpperCase();
+    }
+
     public Conta(ContaRequestDTO data) {
         this.userId = data.userId();
-        this.tipo = data.tipo();
-        this.numeroConta = data.numeroConta();
-        this.nome = data.nome();
+        this.tipo = data.tipo().toUpperCase();
+        this.numeroConta = data.numeroConta().toUpperCase();
+        this.nome = data.nome().toUpperCase();
         this.idGrupo = data.idGrupo();
         this.idSubgrupo = data.idSubgrupo();
     }

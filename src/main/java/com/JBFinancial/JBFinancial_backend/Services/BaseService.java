@@ -6,6 +6,8 @@ import com.JBFinancial.JBFinancial_backend.domain.base.Base;
 import com.JBFinancial.JBFinancial_backend.domain.base.BaseMatrixResponseDTO;
 import com.JBFinancial.JBFinancial_backend.repositories.BaseRepository;
 import com.JBFinancial.JBFinancial_backend.repositories.ContaRepository;
+import com.JBFinancial.JBFinancial_backend.repositories.GrupoRepository;
+import com.JBFinancial.JBFinancial_backend.repositories.SubgrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,12 @@ public class BaseService {
     @Autowired
     private ContaRepository contaRepository;
 
+    @Autowired
+    private GrupoRepository grupoRepository;
+
+    @Autowired
+    private SubgrupoRepository subgrupoRepository;
+
     private static final DecimalFormat decimalFormat = new DecimalFormat("#.00");
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -34,14 +42,18 @@ public class BaseService {
         List<BaseMatrixResponseDTO> responseList = new ArrayList<>();
 
         for (Base base : baseEntries) {
-            String contaNome = contaRepository.findById(base.getContaId()).orElseThrow().getNome();
-            String tipoConta = contaRepository.findById(base.getContaId()).orElseThrow().getTipo();
+            var conta = contaRepository.findById(base.getContaId()).orElseThrow();
+            String contaNome = conta.getNome();
+            String tipoConta = conta.getTipo();
             String valor = decimalFormat.format(base.getValor());
             String creditoDebito = base.getDebtCred() ? "credito" : "debito";
             String impactaCaixa = base.getImpactaCaixa() ? "Sim" : "Não";
             String impactaDre = base.getImpactaDre() ? "Sim" : "Não";
+            String numeroConta = conta.getNumeroConta();
+            String grupoNome = grupoRepository.findById(conta.getIdGrupo()).orElseThrow().getNome();
+            String subgrupoNome = subgrupoRepository.findById(conta.getIdSubgrupo()).orElseThrow().getNome();
 
-            BaseMatrixResponseDTO response = new BaseMatrixResponseDTO(base, contaNome, tipoConta, valor, creditoDebito, impactaCaixa, impactaDre);
+            BaseMatrixResponseDTO response = new BaseMatrixResponseDTO(base, contaNome, tipoConta, valor, creditoDebito, impactaCaixa, impactaDre, numeroConta, grupoNome, subgrupoNome);
             responseList.add(response);
         }
 
@@ -73,7 +85,6 @@ public class BaseService {
             this.descricao = descricao;
         }
 
-        // Getters and setters
     }
 
     public List<List<Object>> getMonthlySummaryByUser(int year, boolean impactaCaixa, String userId) {
@@ -95,7 +106,7 @@ public class BaseService {
 
             if (contaTipo.equals("Entrada")) {
                 entradas.set(month, entradas.get(month) + base.getValor());
-            } else if (contaTipo.equals("Saída")) {
+            } else if (contaTipo.equals("Saida")) {
                 saidas.set(month, saidas.get(month) + base.getValor());
             }
         }

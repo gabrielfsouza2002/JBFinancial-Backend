@@ -2,6 +2,7 @@
 
 package com.JBFinancial.JBFinancial_backend.controller;
 
+import com.JBFinancial.JBFinancial_backend.Services.DreGroupSubgroupResponseDTO;
 import com.JBFinancial.JBFinancial_backend.Services.DreResponseDTO;
 import com.JBFinancial.JBFinancial_backend.Services.DreService;
 import com.JBFinancial.JBFinancial_backend.repositories.UserRepository;
@@ -28,6 +29,13 @@ public class DreController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
         return dreService.calculateDre(userId, year);
+    }
+    @GetMapping("/totals/{year}")
+    public List<DreGroupSubgroupResponseDTO> getTotalsByGroupAndSubgroup(@PathVariable int year) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+        return dreService.getTotalsByGroupAndSubgroup(userId, year);
     }
 }
 
