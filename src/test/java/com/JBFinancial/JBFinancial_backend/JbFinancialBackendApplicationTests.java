@@ -11,5 +11,4 @@ class JbFinancialBackendApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

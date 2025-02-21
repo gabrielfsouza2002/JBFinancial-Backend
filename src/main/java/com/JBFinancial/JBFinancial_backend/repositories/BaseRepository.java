@@ -15,7 +15,7 @@ public interface BaseRepository extends JpaRepository<Base, UUID> {
     @Query("SELECT SUM(b.valor) FROM base b WHERE b.userId = :userId AND b.impactaCaixa = true AND b.contaId IN (SELECT c.id FROM contas c WHERE c.tipo = 'Entrada')")
     Double sumEntradas(String userId);
 
-    @Query("SELECT SUM(b.valor) FROM base b WHERE b.userId = :userId AND b.impactaCaixa = true AND b.contaId IN (SELECT c.id FROM contas c WHERE c.tipo = 'Sai+da')")
+    @Query("SELECT SUM(b.valor) FROM base b WHERE b.userId = :userId AND b.impactaCaixa = true AND b.contaId IN (SELECT c.id FROM contas c WHERE c.tipo = 'Saida')")
     Double sumSaidas(String userId);
 
     @Query("SELECT b FROM base b WHERE b.userId = :userId AND b.impactaCaixa = true")

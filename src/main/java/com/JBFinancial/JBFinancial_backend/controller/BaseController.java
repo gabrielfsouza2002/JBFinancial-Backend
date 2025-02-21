@@ -196,10 +196,8 @@ public class BaseController {
                     boolean debtCred = row[5].equalsIgnoreCase("credito");
                     String dataStr = row[6];
 
-                    var conta = contaRepository.findByNome(nomeConta);
+                    var conta = contaRepository.findByNomeAndUserId(nomeConta, userId);
                     if (conta.isPresent()) {
-                        System.out.println("testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSSSSS");
                         LocalDateTime data = LocalDateTime.parse(dataStr + " 00:00:00.000000", formatter);
 
