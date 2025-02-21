@@ -55,4 +55,19 @@ public class Base {
         this.debtCred = data.debtCred();
         this.data = data.data() != null ? data.data() : LocalDateTime.now();
     }
+
+    @Override
+    public String toString() {
+        return "Base{" +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", data=" + data +
+                ", contaId=" + contaId +
+                ", valor=" + valor +
+                ", impactaCaixa=" + impactaCaixa +
+                ", impactaDre=" + impactaDre +
+                ", descricao='" + descricao + '\'' +
+                ", debtCred=" + debtCred +
+                '}';
+    }
 }
