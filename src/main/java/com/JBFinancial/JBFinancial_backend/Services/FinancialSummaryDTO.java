@@ -2,5 +2,5 @@
 
 package com.JBFinancial.JBFinancial_backend.Services;
 
-public record FinancialSummaryDTO(Double sumEntradas, Double sumSaidas, Double saldoTotal, Double margem) {
+public record FinancialSummaryDTO(Double sumEntradas, Double sumSaidas, Double saldoOperacional, Double saldoTotal, Double margem) {
 }
