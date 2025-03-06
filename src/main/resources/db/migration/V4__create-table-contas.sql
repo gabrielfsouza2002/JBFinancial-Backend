@@ -16,3 +16,6 @@ CREATE TABLE contas (
     CONSTRAINT unique_user_conta UNIQUE (user_id, numero_conta),
     CONSTRAINT unique_user_nome UNIQUE (user_id, nome)
 );
+
+UPDATE contas
+SET nome = UPPER(nome);

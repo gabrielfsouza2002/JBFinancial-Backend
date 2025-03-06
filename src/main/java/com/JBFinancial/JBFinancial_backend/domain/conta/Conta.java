@@ -47,9 +47,9 @@ public class Conta {
         this.nome = this.nome.toUpperCase();
     }
 
-    public Conta(ContaRequestDTO data) {
+    public Conta(ContaRequestDTO data, String tipo) {
         this.userId = data.userId();
-        this.tipo = data.tipo();
+        this.tipo = tipo; // Setando o tipo da conta com o tipo do grupo
         this.numeroConta = data.numeroConta();
         this.nome = data.nome().toUpperCase();
         this.idGrupo = data.idGrupo();

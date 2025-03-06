@@ -26,4 +26,7 @@ public class Grupo {
 
     @Column(name = "digito_grupo", nullable = false)
     private String digitoGrupo;
+
+    @Column(name = "tipo", nullable = false)
+    private String tipo; // Novo campo tipo
 }

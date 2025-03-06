@@ -108,7 +108,7 @@ public class DreService {
         values.put("Ebitda", Double.valueOf(decimalFormat.format(ebitda).replace(",", "")));
         values.put("Lucro Liquido do Exercício", Double.valueOf(decimalFormat.format(lucroLiquidoExercicio).replace(",", "")));
         values.put("Margem Bruta", Double.valueOf(decimalFormat.format(margemBruta).replace(",", "")));
-        values.put("Margem Ebitda", Double.valueOf(decimalFormat.format(margemEbitda).replace(",", "")));
+        values.put("Margem Ebitida", Double.valueOf(decimalFormat.format(margemEbitda).replace(",", "")));
         values.put("Margem Liquida", Double.valueOf(decimalFormat.format(margemLiquida).replace(",", "")));
 
         return values;

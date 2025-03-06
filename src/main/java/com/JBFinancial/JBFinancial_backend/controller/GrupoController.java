@@ -1,3 +1,5 @@
+// src/main/java/com/JBFinancial/JBFinancial_backend/controller/GrupoController.java
+
 package com.JBFinancial.JBFinancial_backend.controller;
 
 import com.JBFinancial.JBFinancial_backend.domain.grupo.*;
@@ -21,6 +23,7 @@ public class GrupoController {
     public void saveGrupo(@Valid @RequestBody GrupoRequestDTO data) {
         Grupo grupo = new Grupo();
         grupo.setNome(data.nome());
+        grupo.setTipo(data.tipo()); // Setando o tipo do grupo
         grupo.setDigitoGrupo(generateNextGrupoDigit());
         grupoRepository.save(grupo);
     }
@@ -36,6 +39,7 @@ public class GrupoController {
     public void updateGrupo(@PathVariable UUID id, @Valid @RequestBody GrupoRequestDTO data) {
         Grupo grupo = grupoRepository.findById(id).orElseThrow(() -> new RuntimeException("Grupo not found"));
         grupo.setNome(data.nome());
+        grupo.setTipo(data.tipo()); // Atualizando o tipo do grupo
         grupoRepository.save(grupo);
     }
 
