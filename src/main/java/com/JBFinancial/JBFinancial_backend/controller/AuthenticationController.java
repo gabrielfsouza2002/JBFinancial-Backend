@@ -8,12 +8,16 @@ import com.JBFinancial.JBFinancial_backend.repositories.UserRepository;
 import com.JBFinancial.JBFinancial_backend.domain.user.AuthenticationDTO;
 import com.JBFinancial.JBFinancial_backend.domain.user.RegisterDTO;
 import com.JBFinancial.JBFinancial_backend.domain.user.User;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -45,6 +49,14 @@ public class AuthenticationController {
 
         this.repository.save(newUser);
 
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/logout")
+    public ResponseEntity logout(HttpServletRequest request, HttpServletResponse response) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
         return ResponseEntity.ok().build();
     }
 }

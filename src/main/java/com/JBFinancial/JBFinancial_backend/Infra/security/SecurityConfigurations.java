@@ -1,5 +1,6 @@
 package com.JBFinancial.JBFinancial_backend.Infra.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +43,14 @@ public class SecurityConfigurations {
                         .anyRequest().authenticated()
                 )
                 .cors(withDefaults())
+                .logout(logout -> logout
+                        .logoutUrl("/auth/logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        })
+                )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
