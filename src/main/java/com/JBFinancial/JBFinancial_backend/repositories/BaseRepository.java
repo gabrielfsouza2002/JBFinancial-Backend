@@ -35,4 +35,7 @@ public interface BaseRepository extends JpaRepository<Base, UUID> {
     // Add other queries as needed
     @Query("SELECT b FROM base b WHERE YEAR(b.data) = :year AND b.userId = :userId")
     List<Base> findByYearAndUserId(@Param("year") int year, @Param("userId") String userId);
+
+    @Query("SELECT b FROM base b JOIN FETCH b.conta c JOIN FETCH c.grupo g JOIN FETCH c.subgrupo sg WHERE b.userId = :userId")
+    List<Base> findAllWithDetailsByUserId(@Param("userId") String userId);
 }

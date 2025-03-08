@@ -196,6 +196,11 @@ public class BaseController {
                     boolean debtCred = row[5].equalsIgnoreCase("credito");
                     String dataStr = row[6];
 
+                    // Transform valor to negative if debtCred is false (debito)
+                    if (!debtCred) {
+                        valor = -valor;
+                    }
+
                     var conta = contaRepository.findByNomeAndUserId(nomeConta, userId);
                     if (conta.isPresent()) {
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSSSSS");
@@ -222,7 +227,7 @@ public class BaseController {
             }
         }
 
-        bases.forEach(base -> System.out.println(base.toString()));
+        //bases.forEach(base -> System.out.println(base.toString()));
         repository.saveAll(bases);
     }
 }

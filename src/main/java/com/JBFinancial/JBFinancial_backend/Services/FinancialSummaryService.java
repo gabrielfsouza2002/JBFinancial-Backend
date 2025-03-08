@@ -25,8 +25,9 @@ public class FinancialSummaryService {
         sumSaidas = sumSaidas != null ? sumSaidas : 0.0;
 
         Double saldoTotal = saldoInicial + sumEntradas - sumSaidas;
-        Double margem = saldoTotal != 0 ? ((saldoTotal - sumSaidas) / saldoTotal) * 100 : 0.0;
         Double saldoOperacional = sumEntradas - sumSaidas;
+        Double margem = saldoTotal != 0 ? ((saldoOperacional) / sumEntradas) * 100 : 0.0;
+
 
         return new FinancialSummaryDTO(sumEntradas, sumSaidas, saldoOperacional, saldoTotal, margem);
     }
