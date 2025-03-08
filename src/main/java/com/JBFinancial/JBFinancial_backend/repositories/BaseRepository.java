@@ -36,6 +36,13 @@ public interface BaseRepository extends JpaRepository<Base, UUID> {
     @Query("SELECT b FROM base b WHERE YEAR(b.data) = :year AND b.userId = :userId")
     List<Base> findByYearAndUserId(@Param("year") int year, @Param("userId") String userId);
 
-    @Query("SELECT b FROM base b JOIN FETCH b.conta c JOIN FETCH c.grupo g JOIN FETCH c.subgrupo sg WHERE b.userId = :userId")
-    List<Base> findAllWithDetailsByUserId(@Param("userId") String userId);
+    @Query(value = "SELECT b.id, b.user_id, b.data, b.conta_id, b.valor, b.impacta_caixa, b.impacta_dre, b.descricao, b.debt_cred, " +
+            "c.nome AS conta_nome, c.tipo AS conta_tipo, c.numero_conta, g.nome AS grupo_nome, s.nome AS subgrupo_nome " +
+            "FROM base b " +
+            "JOIN contas c ON b.conta_id = c.id " +
+            "JOIN grupo g ON c.id_grupo = g.id " +
+            "JOIN subgrupo s ON c.id_subgrupo = s.id " +
+            "WHERE b.user_id = :userId", nativeQuery = true)
+    List<Object[]> findBaseMatrixByUserId(@Param("userId") String userId);
+
 }
