@@ -87,16 +87,16 @@ public class DreService {
     private Map<String, Double> calculateDreValues(Map<UUID, Double> totals) {
         double receitaBruta = totals.getOrDefault(RECEITA_BRUTA_UUID, 0.0);
         double deducoesReceita = totals.getOrDefault(DEDUCOES_RECEITA_UUID, 0.0);
-        double receitaLiquida = receitaBruta - deducoesReceita;
-
         double custosBensServicosVendidos = totals.getOrDefault(CUSTOS_BENS_SERVICOS_VENDIDOS_UUID, 0.0);
-        double lucroBruto = receitaLiquida - custosBensServicosVendidos;
-
         double despesasOperacionais = totals.getOrDefault(DESPESAS_OPERACIONAIS_UUID, 0.0);
-        double ebitda = lucroBruto - despesasOperacionais;
         double impostoSobreLucro = totals.getOrDefault(IMPOSTO_SOBRE_LUCRO_UUID, 0.0);
         double despesasReceitasFinanceiras = totals.getOrDefault(DESPESAS_RECEITAS_FINANCEIRAS_UUID, 0.0);
-        double lucroLiquidoExercicio = ebitda - despesasReceitasFinanceiras - impostoSobreLucro;
+
+
+        double receitaLiquida = receitaBruta + deducoesReceita;
+        double lucroBruto = receitaLiquida + custosBensServicosVendidos;
+        double ebitda = lucroBruto + despesasOperacionais;
+        double lucroLiquidoExercicio = ebitda + despesasReceitasFinanceiras + impostoSobreLucro;
 
         double margemBruta = receitaLiquida != 0 ? (lucroBruto / receitaLiquida) * 100 : 0;
         double margemEbitda = receitaLiquida != 0 ? (ebitda / receitaLiquida) * 100 : 0;
@@ -133,19 +133,24 @@ public class DreService {
             String subgroupKey = subgrupo.getNome();
             int month = base.getData().getMonthValue();
 
+            double valor = base.getValor();
+            if (conta.getTipo().equals("Saida")) {
+                valor = -valor;
+            }
+
             annualTotals.putIfAbsent(groupKey, 0.0);
-            annualTotals.put(groupKey, annualTotals.get(groupKey) + base.getValor());
+            annualTotals.put(groupKey, annualTotals.get(groupKey) + valor);
 
             annualTotals.putIfAbsent(subgroupKey, 0.0);
-            annualTotals.put(subgroupKey, annualTotals.get(subgroupKey) + base.getValor());
+            annualTotals.put(subgroupKey, annualTotals.get(subgroupKey) + valor);
 
             monthlyTotals.putIfAbsent(groupKey, new HashMap<>());
             monthlyTotals.get(groupKey).putIfAbsent(month, 0.0);
-            monthlyTotals.get(groupKey).put(month, monthlyTotals.get(groupKey).get(month) + base.getValor());
+            monthlyTotals.get(groupKey).put(month, monthlyTotals.get(groupKey).get(month) + valor);
 
             monthlyTotals.putIfAbsent(subgroupKey, new HashMap<>());
             monthlyTotals.get(subgroupKey).putIfAbsent(month, 0.0);
-            monthlyTotals.get(subgroupKey).put(month, monthlyTotals.get(subgroupKey).get(month) + base.getValor());
+            monthlyTotals.get(subgroupKey).put(month, monthlyTotals.get(subgroupKey).get(month) + valor);
         }
 
         List<DreGroupSubgroupResponseDTO> responseList = new ArrayList<>();

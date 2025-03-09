@@ -20,35 +20,22 @@ public record BaseMatrixResponseDTO(
         String grupo,
         String subgrupo
 ) {
-    public BaseMatrixResponseDTO(
-            int ano,
-            int mes,
-            String data,
-            String horario,
-            String nomeDaConta,
-            String tipoConta,
-            String valor,
-            String creditoDebito,
-            String impactaCaixa,
-            String impactaDre,
-            String descricao,
-            String numeroConta,
-            String grupo,
-            String subgrupo
-    ) {
-        this.ano = ano;
-        this.mes = mes;
-        this.data = data;
-        this.horario = horario;
-        this.nomeDaConta = nomeDaConta;
-        this.tipoConta = tipoConta;
-        this.valor = valor;
-        this.creditoDebito = creditoDebito;
-        this.impactaCaixa = impactaCaixa;
-        this.impactaDre = impactaDre;
-        this.descricao = descricao;
-        this.numeroConta = numeroConta;
-        this.grupo = grupo;
-        this.subgrupo = subgrupo;
+    public BaseMatrixResponseDTO(Base base, String nomeDaConta, String tipoConta, String valor, String creditoDebito, String impactaCaixa, String impactaDre, String numeroConta, String grupo, String subgrupo) {
+        this(
+                base.getData().getYear(),
+                base.getData().getMonthValue(),
+                base.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                base.getData().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                nomeDaConta,
+                tipoConta,
+                valor,
+                creditoDebito,
+                impactaCaixa,
+                impactaDre,
+                base.getDescricao(),
+                numeroConta,
+                grupo,
+                subgrupo
+        );
     }
 }

@@ -22,7 +22,7 @@ public class FinancialSummaryService {
         Double saldoInicial = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")).getSaldoInicial().doubleValue();
 
         sumEntradas = sumEntradas != null ? sumEntradas : 0.0;
-        sumSaidas = sumSaidas != null ? sumSaidas : 0.0;
+        sumSaidas = sumSaidas != null ? -1*sumSaidas : 0.0;
 
         Double saldoTotal = saldoInicial + sumEntradas - sumSaidas;
         Double saldoOperacional = sumEntradas - sumSaidas;

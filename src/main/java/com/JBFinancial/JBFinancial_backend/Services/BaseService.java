@@ -38,26 +38,22 @@ public class BaseService {
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public List<BaseMatrixResponseDTO> getBaseMatrix(String userId) {
-        List<Object[]> results = baseRepository.findBaseMatrixByUserId(userId);
+        List<Base> baseEntries = baseRepository.findByUserId(userId);
         List<BaseMatrixResponseDTO> responseList = new ArrayList<>();
 
-        for (Object[] row : results) {
-            BaseMatrixResponseDTO response = new BaseMatrixResponseDTO(
-                    ((java.sql.Timestamp) row[2]).toLocalDateTime().getYear(), // ano
-                    ((java.sql.Timestamp) row[2]).toLocalDateTime().getMonthValue(), // mes
-                    ((java.sql.Timestamp) row[2]).toLocalDateTime().format(dateFormatter), // data
-                    ((java.sql.Timestamp) row[2]).toLocalDateTime().format(timeFormatter), // horario
-                    (String) row[9], // contaNome
-                    (String) row[10], // tipoConta
-                    decimalFormat.format((Double) row[4]), // valor
-                    (Boolean) row[8] ? "credito" : "debito", // creditoDebito
-                    (Boolean) row[5] ? "Sim" : "Não", // impactaCaixa
-                    (Boolean) row[6] ? "Sim" : "Não", // impactaDre
-                    (String) row[7], // descricao
-                    (String) row[11], // numeroConta
-                    (String) row[12], // grupoNome
-                    (String) row[13] // subgrupoNome
-            );
+        for (Base base : baseEntries) {
+            var conta = contaRepository.findById(base.getContaId()).orElseThrow();
+            String contaNome = conta.getNome();
+            String tipoConta = conta.getTipo();
+            String valor = decimalFormat.format(base.getValor());
+            String creditoDebito = base.getDebtCred() ? "credito" : "debito";
+            String impactaCaixa = base.getImpactaCaixa() ? "Sim" : "Não";
+            String impactaDre = base.getImpactaDre() ? "Sim" : "Não";
+            String numeroConta = conta.getNumeroConta();
+            String grupoNome = grupoRepository.findById(conta.getIdGrupo()).orElseThrow().getNome();
+            String subgrupoNome = subgrupoRepository.findById(conta.getIdSubgrupo()).orElseThrow().getNome();
+
+            BaseMatrixResponseDTO response = new BaseMatrixResponseDTO(base, contaNome, tipoConta, valor, creditoDebito, impactaCaixa, impactaDre, numeroConta, grupoNome, subgrupoNome);
             responseList.add(response);
         }
 
@@ -111,7 +107,7 @@ public class BaseService {
             if (contaTipo.equals("Entrada")) {
                 entradas.set(month, entradas.get(month) + base.getValor());
             } else if (contaTipo.equals("Saida")) {
-                saidas.set(month, saidas.get(month) + base.getValor());
+                saidas.set(month, saidas.get(month) - base.getValor());
             }
         }
 
