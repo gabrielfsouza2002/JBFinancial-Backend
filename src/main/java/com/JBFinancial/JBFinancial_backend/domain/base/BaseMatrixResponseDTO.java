@@ -11,14 +11,15 @@ public record BaseMatrixResponseDTO(
         String horario,
         String nomeDaConta,
         String tipoConta,
+        String numeroConta,
+        String grupo,
+        String subgrupo,
         String valor,
         String creditoDebito,
         String impactaCaixa,
         String impactaDre,
-        String descricao,
-        String numeroConta,
-        String grupo,
-        String subgrupo
+        String descricao
+
 ) {
     public BaseMatrixResponseDTO(Base base, String nomeDaConta, String tipoConta, String valor, String creditoDebito, String impactaCaixa, String impactaDre, String numeroConta, String grupo, String subgrupo) {
         this(
@@ -28,14 +29,14 @@ public record BaseMatrixResponseDTO(
                 base.getData().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
                 nomeDaConta,
                 tipoConta,
+                numeroConta,
+                grupo,
+                subgrupo,
                 valor,
                 creditoDebito,
                 impactaCaixa,
                 impactaDre,
-                base.getDescricao(),
-                numeroConta,
-                grupo,
-                subgrupo
+                base.getDescricao()
         );
     }
 }

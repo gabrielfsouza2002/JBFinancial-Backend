@@ -5,6 +5,7 @@ package com.JBFinancial.JBFinancial_backend.controller;
 import com.JBFinancial.JBFinancial_backend.domain.conta.*;
 import com.JBFinancial.JBFinancial_backend.repositories.ContaRepository;
 import com.JBFinancial.JBFinancial_backend.repositories.GrupoRepository;
+import com.JBFinancial.JBFinancial_backend.repositories.SubgrupoRepository;
 import com.JBFinancial.JBFinancial_backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -29,6 +30,9 @@ public class ContaController {
     @Autowired
     private GrupoRepository grupoRepository;
 
+    @Autowired
+    private SubgrupoRepository subgrupoRepository;
+
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
     public void saveConta(@Valid @RequestBody ContaRequestDTO data){
@@ -50,6 +54,8 @@ public class ContaController {
 
         Conta contaData = new Conta(data, tipoGrupo);
         contaData.setUserId(userId);
+        contaData.setGrupo(grupoRepository.findById(data.idGrupo()).orElseThrow(() -> new RuntimeException("Grupo not found")));
+        contaData.setSubgrupo(subgrupoRepository.findById(data.idSubgrupo()).orElseThrow(() -> new RuntimeException("Subgrupo not found")));
         contaRepository.save(contaData);
     }
 
@@ -95,8 +101,8 @@ public class ContaController {
         contaData.setTipo(tipoGrupo); // Atualizando o tipo da conta com o tipo do grupo
         contaData.setNumeroConta(data.numeroConta());
         contaData.setNome(data.nome());
-        contaData.setIdGrupo(data.idGrupo());
-        contaData.setIdSubgrupo(data.idSubgrupo());
+        contaData.setGrupo(grupoRepository.findById(data.idGrupo()).orElseThrow(() -> new RuntimeException("Grupo not found")));
+        contaData.setSubgrupo(subgrupoRepository.findById(data.idSubgrupo()).orElseThrow(() -> new RuntimeException("Subgrupo not found")));
         contaRepository.save(contaData);
     }
 

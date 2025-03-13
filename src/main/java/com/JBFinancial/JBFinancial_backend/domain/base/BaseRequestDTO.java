@@ -1,5 +1,6 @@
 package com.JBFinancial.JBFinancial_backend.domain.base;
 
+import com.JBFinancial.JBFinancial_backend.domain.conta.Conta;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,7 +17,8 @@ public record BaseRequestDTO(
         String descricao,
         @NotNull(message = "Debt/Cred é obrigatório")
         Boolean debtCred,
-        LocalDateTime data // Campo opcional para definir a data manualmente
+        LocalDateTime data, // Campo opcional para definir a data manualmente
+        Conta conta // Add this field
 ) {
     public BaseRequestDTO {
         if (debtCred && valor < 0) {

@@ -2,6 +2,8 @@
 
 package com.JBFinancial.JBFinancial_backend.domain.conta;
 
+import com.JBFinancial.JBFinancial_backend.domain.grupo.Grupo;
+import com.JBFinancial.JBFinancial_backend.domain.subgrupo.Subgrupo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -35,11 +37,13 @@ public class Conta {
     @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "id_grupo", nullable = false)
-    private UUID idGrupo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_grupo", nullable = false)
+    private Grupo grupo;
 
-    @Column(name = "id_subgrupo", nullable = false)
-    private UUID idSubgrupo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_subgrupo", nullable = false)
+    private Subgrupo subgrupo;
 
     @PrePersist
     @PreUpdate
@@ -47,12 +51,21 @@ public class Conta {
         this.nome = this.nome.toUpperCase();
     }
 
+    // src/main/java/com/JBFinancial/JBFinancial_backend/domain/conta/Conta.java
+    public UUID getIdGrupo() {
+        return grupo != null ? grupo.getId() : null;
+    }
+
+    public UUID getIdSubgrupo() {
+        return subgrupo != null ? subgrupo.getId() : null;
+    }
+
     public Conta(ContaRequestDTO data, String tipo) {
         this.userId = data.userId();
         this.tipo = tipo; // Setando o tipo da conta com o tipo do grupo
         this.numeroConta = data.numeroConta();
         this.nome = data.nome().toUpperCase();
-        this.idGrupo = data.idGrupo();
-        this.idSubgrupo = data.idSubgrupo();
+        this.grupo = data.grupo();
+        this.subgrupo = data.subgrupo();
     }
 }

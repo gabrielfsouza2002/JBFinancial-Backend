@@ -2,6 +2,8 @@
 
 package com.JBFinancial.JBFinancial_backend.domain.conta;
 
+import com.JBFinancial.JBFinancial_backend.domain.grupo.Grupo;
+import com.JBFinancial.JBFinancial_backend.domain.subgrupo.Subgrupo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -23,6 +25,8 @@ public record ContaRequestDTO(
         String nome,
 
         UUID idGrupo,
-        UUID idSubgrupo
+        UUID idSubgrupo,
+        Grupo grupo, // Add this field
+        Subgrupo subgrupo // Add this field
 ) {
 }

@@ -38,20 +38,19 @@ public class BaseService {
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public List<BaseMatrixResponseDTO> getBaseMatrix(String userId) {
-        List<Base> baseEntries = baseRepository.findByUserId(userId);
+        List<Base> baseEntries = baseRepository.findByUserIdWithDetails(userId);
         List<BaseMatrixResponseDTO> responseList = new ArrayList<>();
 
         for (Base base : baseEntries) {
-            var conta = contaRepository.findById(base.getContaId()).orElseThrow();
+            var conta = base.getConta();
             String contaNome = conta.getNome();
             String tipoConta = conta.getTipo();
-            String valor = decimalFormat.format(base.getValor());
-            String creditoDebito = base.getDebtCred() ? "credito" : "debito";
+            String valor = decimalFormat.format(Math.abs(base.getValor()));            String creditoDebito = base.getDebtCred() ? "credito" : "debito";
             String impactaCaixa = base.getImpactaCaixa() ? "Sim" : "Não";
             String impactaDre = base.getImpactaDre() ? "Sim" : "Não";
             String numeroConta = conta.getNumeroConta();
-            String grupoNome = grupoRepository.findById(conta.getIdGrupo()).orElseThrow().getNome();
-            String subgrupoNome = subgrupoRepository.findById(conta.getIdSubgrupo()).orElseThrow().getNome();
+            String grupoNome = conta.getGrupo().getNome();
+            String subgrupoNome = conta.getSubgrupo().getNome();
 
             BaseMatrixResponseDTO response = new BaseMatrixResponseDTO(base, contaNome, tipoConta, valor, creditoDebito, impactaCaixa, impactaDre, numeroConta, grupoNome, subgrupoNome);
             responseList.add(response);

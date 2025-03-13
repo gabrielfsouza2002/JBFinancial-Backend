@@ -98,7 +98,7 @@ public class BaseController {
             throw new RuntimeException("User not authorized to use this account");
         }
 
-        baseData.setContaId(data.contaId());
+        baseData.setConta(data.conta());
         baseData.setValor(data.valor());
         baseData.setImpactaCaixa(data.impactaCaixa());
         baseData.setImpactaDre(data.impactaDre());
@@ -207,7 +207,7 @@ public class BaseController {
                         LocalDateTime data = LocalDateTime.parse(dataStr + " 00:00:00.000000", formatter);
 
                         Base base = new Base();
-                        base.setContaId(conta.get().getId());
+                        base.setConta(conta.get());
                         base.setValor(valor);
                         base.setImpactaCaixa(impactaCaixa);
                         base.setImpactaDre(impactaDre);
