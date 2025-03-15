@@ -29,8 +29,11 @@ public class Base {
     @Column(name = "data", nullable = false)
     private LocalDateTime data;
 
+    @Column(name = "conta_id", nullable = false)
+    private UUID contaId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "conta_id", nullable = false)
+    @JoinColumn(name = "conta_id", insertable = false, updatable = false)
     private Conta conta;
 
     @Column(name = "valor", nullable = false)
@@ -55,6 +58,7 @@ public class Base {
     }
 
     public Base(BaseRequestDTO data) {
+        this.contaId = data.contaId();
         this.conta = data.conta();
         this.valor = data.valor();
         this.impactaCaixa = data.impactaCaixa();
@@ -70,6 +74,7 @@ public class Base {
                 "id=" + id +
                 ", userId='" + userId + '\'' +
                 ", data=" + data +
+                ", contaId=" + contaId +
                 ", conta=" + conta +
                 ", valor=" + valor +
                 ", impactaCaixa=" + impactaCaixa +

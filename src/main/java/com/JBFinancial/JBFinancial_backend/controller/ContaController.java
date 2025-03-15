@@ -53,10 +53,12 @@ public class ContaController {
                 .getTipo();
 
         Conta contaData = new Conta(data, tipoGrupo);
+
         contaData.setUserId(userId);
         contaData.setGrupo(grupoRepository.findById(data.idGrupo()).orElseThrow(() -> new RuntimeException("Grupo not found")));
         contaData.setSubgrupo(subgrupoRepository.findById(data.idSubgrupo()).orElseThrow(() -> new RuntimeException("Subgrupo not found")));
         contaRepository.save(contaData);
+
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")

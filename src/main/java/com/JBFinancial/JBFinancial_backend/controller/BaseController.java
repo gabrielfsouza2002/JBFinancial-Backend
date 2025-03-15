@@ -63,6 +63,8 @@ public class BaseController {
             throw new RuntimeException("User not authorized to use this account");
         }
 
+
+
         Base baseData = new Base(data);
         baseData.setUserId(userId);
         repository.save(baseData);
@@ -172,62 +174,9 @@ public class BaseController {
 
     @PostMapping("/import")
     public void importBase(@RequestParam("file") MultipartFile file) throws IOException, CsvException {
-        List<Base> bases = new ArrayList<>();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
-
-        try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
-            List<String[]> rows = reader.readAll();
-            boolean isFirstRow = true;
-            for (String[] row : rows) {
-                if (isFirstRow) {
-                    isFirstRow = false;
-                    continue; // Skip header row
-                }
-                if (row.length < 7) continue; // Ignore invalid rows
-
-                try {
-                    String nomeConta = row[0].toUpperCase(); // Convert to uppercase
-                    double valor = Double.parseDouble(row[1]);
-                    boolean impactaCaixa = row[2].equalsIgnoreCase("sim");
-                    boolean impactaDre = row[3].equalsIgnoreCase("sim");
-                    String descricao = row[4];
-                    boolean debtCred = row[5].equalsIgnoreCase("credito");
-                    String dataStr = row[6];
-
-                    // Transform valor to negative if debtCred is false (debito)
-                    if (!debtCred) {
-                        valor = -valor;
-                    }
-
-                    var conta = contaRepository.findByNomeAndUserId(nomeConta, userId);
-                    if (conta.isPresent()) {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSSSSS");
-                        LocalDateTime data = LocalDateTime.parse(dataStr + " 00:00:00.000000", formatter);
-
-                        Base base = new Base();
-                        base.setConta(conta.get());
-                        base.setValor(valor);
-                        base.setImpactaCaixa(impactaCaixa);
-                        base.setImpactaDre(impactaDre);
-                        base.setDescricao(descricao);
-                        base.setDebtCred(debtCred);
-                        base.setData(data);
-                        base.setUserId(userId);
-
-                        bases.add(base);
-                    }
-                } catch (NumberFormatException e) {
-                    System.err.println("Invalid number format in row: " + Arrays.toString(row));
-                } catch (Exception e) {
-                    System.err.println("Error processing row: " + Arrays.toString(row));
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        //bases.forEach(base -> System.out.println(base.toString()));
-        repository.saveAll(bases);
+        baseService.importBase(file, userId);
     }
 }
