@@ -11,7 +11,7 @@ COPY . .
 RUN ./mvnw package -DskipTests
 
 # Expose the port the app runs on
-EXPOSE 8081
+EXPOSE 8080
 
 # Run the application
 CMD ["java", "-jar", "target/jbfinancial-backend-0.0.1-SNAPSHOT.jar"]
