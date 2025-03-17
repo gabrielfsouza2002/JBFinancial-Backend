@@ -14,4 +14,4 @@ RUN ./mvnw package -DskipTests
 EXPOSE 8080
 
 # Run the application
-CMD ["java", "-jar", "target/jbfinancial-backend-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "target/JBFinancial-backend-0.0.1-SNAPSHOT.jar"]
