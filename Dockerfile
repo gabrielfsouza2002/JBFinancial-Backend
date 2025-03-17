@@ -1,5 +1,17 @@
-FROM openjdk:17-jdk-alpine
+# Use an official OpenJDK runtime as a parent image
+FROM openjdk:17-jdk-slim
+
+# Set the working directory in the container
 WORKDIR /app
-COPY target/seu-projeto.jar app.jar
+
+# Copy the local code to the container image
+COPY . .
+
+# Package the application
+RUN ./mvnw package -DskipTests
+
+# Expose the port the app runs on
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Run the application
+CMD ["java", "-jar", "target/jbfinancial-backend-0.0.1-SNAPSHOT.jar"]
