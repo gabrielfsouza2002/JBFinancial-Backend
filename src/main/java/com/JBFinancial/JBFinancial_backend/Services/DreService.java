@@ -71,7 +71,6 @@ public class DreService {
         }
 
         List<DreResponseDTO> dreResponses = new ArrayList<>();
-        dreResponses.add(new DreResponseDTO(calculateDreValues(annualTotals)));
 
         for (int month = 1; month <= 12; month++) {
             Map<UUID, Double> monthlyTotal = new HashMap<>();
@@ -80,6 +79,8 @@ public class DreService {
             }
             dreResponses.add(new DreResponseDTO(calculateDreValues(monthlyTotal)));
         }
+
+        dreResponses.add(new DreResponseDTO(calculateDreValues(annualTotals)));
 
         return dreResponses;
     }
@@ -154,7 +155,7 @@ public class DreService {
         }
 
         List<DreGroupSubgroupResponseDTO> responseList = new ArrayList<>();
-        responseList.add(createResponseDTO(annualTotals, year, 0, grupos, subgrupos));
+
 
         for (int month = 1; month <= 12; month++) {
             Map<String, Double> monthlyTotal = new HashMap<>();
@@ -163,6 +164,8 @@ public class DreService {
             }
             responseList.add(createResponseDTO(monthlyTotal, year, month, grupos, subgrupos));
         }
+
+        responseList.add(createResponseDTO(annualTotals, year, 0, grupos, subgrupos));
 
         return responseList;
     }
