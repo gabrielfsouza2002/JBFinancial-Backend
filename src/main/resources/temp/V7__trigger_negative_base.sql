@@ -1,4 +1,4 @@
--- src/main/resources/db/migration/V6__trigger_negative_base.sql
+-- src/main/resources/db/migration/V7__trigger_negative_base.sql
 
 -- Criação da função que será chamada pelo trigger
 CREATE OR REPLACE FUNCTION enforce_negative_value()
