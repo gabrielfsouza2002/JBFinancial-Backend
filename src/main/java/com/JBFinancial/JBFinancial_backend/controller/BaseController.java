@@ -106,6 +106,9 @@ public class BaseController {
         baseData.setImpactaDre(data.impactaDre());
         baseData.setDescricao(data.descricao());
         baseData.setDebtCred(data.debtCred());
+        baseData.setIdProduto(data.idProduto());
+        baseData.setIdCliente(data.idCliente());
+        baseData.setIdFornecedor(data.idFornecedor());
         repository.save(baseData);
     }
 

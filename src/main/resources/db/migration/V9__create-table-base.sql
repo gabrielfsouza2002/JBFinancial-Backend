@@ -1,4 +1,4 @@
--- src/main/resources/db/migration/V6__create-table-base.sql
+-- src/main/resources/db/migration/V9__create-table-base.sql
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -12,6 +12,12 @@ CREATE TABLE base (
     impacta_dre BOOLEAN NOT NULL,
     descricao TEXT NOT NULL,
     debt_cred BOOLEAN NOT NULL,
+    id_produto UUID,
+    id_cliente UUID,
+    id_fornecedor UUID,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id),
-    CONSTRAINT fk_conta FOREIGN KEY (conta_id) REFERENCES contas(id)
+    CONSTRAINT fk_conta FOREIGN KEY (conta_id) REFERENCES contas(id),
+    CONSTRAINT fk_base_produto FOREIGN KEY (id_produto) REFERENCES produto(id),
+    CONSTRAINT fk_base_cliente FOREIGN KEY (id_cliente) REFERENCES cliente(id),
+    CONSTRAINT fk_base_fornecedor FOREIGN KEY (id_fornecedor) REFERENCES fornecedor(id)
 );

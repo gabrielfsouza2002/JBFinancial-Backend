@@ -60,7 +60,12 @@ public class BaseService {
             String grupoNome = conta.getGrupo().getNome();
             String subgrupoNome = conta.getSubgrupo().getNome();
 
-            BaseMatrixResponseDTO response = new BaseMatrixResponseDTO(base, contaNome, tipoConta, valor, creditoDebito, impactaCaixa, impactaDre, numeroConta, grupoNome, subgrupoNome);
+            // Obter nomes de produto, cliente e fornecedor
+            String produtoNome = base.getProduto() != null ? base.getProduto().getNome_produto() : "";
+            String clienteNome = base.getCliente() != null ? base.getCliente().getNome_cliente() : "";
+            String fornecedorNome = base.getFornecedor() != null ? base.getFornecedor().getNome_fornecedor() : "";
+
+            BaseMatrixResponseDTO response = new BaseMatrixResponseDTO(base, contaNome, tipoConta, valor, creditoDebito, impactaCaixa, impactaDre, numeroConta, grupoNome, subgrupoNome, produtoNome, clienteNome, fornecedorNome);
             responseList.add(response);
         }
 

@@ -34,7 +34,7 @@ public class ProdutoController {
             throw new RuntimeException("Código do produto já existe.");
         }
 
-        if (produtoRepository.existsByNomeAndUserId(data.nome().toUpperCase(), userId)) {
+        if (produtoRepository.existsByNomeProdutoAndUserId(data.nome_produto().toUpperCase(), userId)) {
             throw new RuntimeException("Nome do produto já existe.");
         }
 
@@ -74,12 +74,12 @@ public class ProdutoController {
             throw new RuntimeException("Código do produto já existe.");
         }
 
-        if (produtoRepository.existsByNomeAndIdNotAndUserId(data.nome().toUpperCase(), id, userId)) {
+        if (produtoRepository.existsByNomeProdutoAndIdNotAndUserId(data.nome_produto().toUpperCase(), id, userId)) {
             throw new RuntimeException("Nome do produto já existe.");
         }
 
         produto.setCodigo(data.codigo());
-        produto.setNome(data.nome());
+        produto.setNome_produto(data.nome_produto());
         produto.setDescricao(data.descricao());
         produto.setCategoria(data.categoria());
         produtoRepository.save(produto);

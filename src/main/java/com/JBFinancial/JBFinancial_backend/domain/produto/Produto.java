@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Table(name = "produto", uniqueConstraints = {
         @UniqueConstraint(name = "unique_user_codigo", columnNames = {"user_id", "codigo"}),
-        @UniqueConstraint(name = "unique_user_nome", columnNames = {"user_id", "nome"})
+        @UniqueConstraint(name = "unique_user_nome_produto", columnNames = {"user_id", "nome_produto"})
 })
 @Entity(name = "produto")
 @Getter
@@ -26,8 +26,8 @@ public class Produto {
     @Column(name = "codigo", nullable = false, length = 20)
     private String codigo;
 
-    @Column(name = "nome", nullable = false, length = 30)
-    private String nome;
+    @Column(name = "nome_produto", nullable = false, length = 30)
+    private String nome_produto;
 
     @Column(name = "descricao", nullable = false, length = 255)
     private String descricao;
@@ -38,14 +38,14 @@ public class Produto {
     @PrePersist
     @PreUpdate
     private void convertToUpperCase() {
-        this.nome = this.nome.toUpperCase();
+        this.nome_produto = this.nome_produto.toUpperCase();
         this.codigo = this.codigo.toUpperCase();
         this.categoria = this.categoria.toUpperCase();
     }
 
     public Produto(ProdutoRequestDTO data) {
         this.codigo = data.codigo().toUpperCase();
-        this.nome = data.nome().toUpperCase();
+        this.nome_produto = data.nome_produto().toUpperCase();
         this.descricao = data.descricao();
         this.categoria = data.categoria().toUpperCase();
     }

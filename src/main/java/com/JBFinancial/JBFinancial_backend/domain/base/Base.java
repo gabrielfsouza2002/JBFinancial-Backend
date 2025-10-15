@@ -1,6 +1,9 @@
 package com.JBFinancial.JBFinancial_backend.domain.base;
 
 import com.JBFinancial.JBFinancial_backend.domain.conta.Conta;
+import com.JBFinancial.JBFinancial_backend.domain.produto.Produto;
+import com.JBFinancial.JBFinancial_backend.domain.cliente.Cliente;
+import com.JBFinancial.JBFinancial_backend.domain.fornecedor.Fornecedor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -51,6 +54,27 @@ public class Base {
     @Column(name = "debt_cred", nullable = false)
     private Boolean debtCred;
 
+    @Column(name = "id_produto")
+    private UUID idProduto;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_produto", insertable = false, updatable = false)
+    private Produto produto;
+
+    @Column(name = "id_cliente")
+    private UUID idCliente;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_cliente", insertable = false, updatable = false)
+    private Cliente cliente;
+
+    @Column(name = "id_fornecedor")
+    private UUID idFornecedor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_fornecedor", insertable = false, updatable = false)
+    private Fornecedor fornecedor;
+
     // src/main/java/com/JBFinancial/JBFinancial_backend/domain/base/Base.java
 
     public UUID getContaId() {
@@ -66,6 +90,9 @@ public class Base {
         this.descricao = data.descricao();
         this.debtCred = data.debtCred();
         this.data = data.data() != null ? data.data() : LocalDateTime.now();
+        this.idProduto = data.idProduto();
+        this.idCliente = data.idCliente();
+        this.idFornecedor = data.idFornecedor();
     }
 
     @Override
@@ -81,6 +108,9 @@ public class Base {
                 ", impactaDre=" + impactaDre +
                 ", descricao='" + descricao + '\'' +
                 ", debtCred=" + debtCred +
+                ", idProduto=" + idProduto +
+                ", idCliente=" + idCliente +
+                ", idFornecedor=" + idFornecedor +
                 '}';
     }
 }

@@ -18,7 +18,10 @@ public record BaseRequestDTO(
         @NotNull(message = "Debt/Cred é obrigatório")
         Boolean debtCred,
         LocalDateTime data, // Campo opcional para definir a data manualmente
-        Conta conta // Add this field
+        Conta conta, // Add this field
+        UUID idProduto,
+        UUID idCliente,
+        UUID idFornecedor
 ) {
     public BaseRequestDTO {
         if (debtCred && valor < 0) {
