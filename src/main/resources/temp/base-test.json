@@ -1,0 +1,14 @@
+{
+  "contaId": "5ddf0da9-cdc0-42b1-838b-815eab2d8ec4",
+  "valor": 1500.00,
+  "impactaCaixa": true,
+  "impactaDre": true,
+  "descricao": "Venda de produto X para cliente Y",
+  "debtCred": true,
+  "data": null,
+  "conta": null,
+  "idProduto": "d35cf9b9-10d8-4c6a-b3af-f26cd7730ce2",
+  "idCliente": "fde76e7a-1c7c-43a6-adfe-973fd7f34350",
+  "idFornecedor": "45e8f47f-a967-41a6-b7e4-6dcbf40e6180"
+}
+
