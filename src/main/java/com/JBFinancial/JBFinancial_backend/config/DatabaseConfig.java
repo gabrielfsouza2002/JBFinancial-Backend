@@ -19,8 +19,6 @@ public class DatabaseConfig {
         System.out.println("DATABASE CONFIGURATION:");
         System.out.println("URL: " + url);
         System.out.println("Username: " + username);
-        System.out.println("Username length: " + username.length());
         System.out.println("===========================================");
     }
 }
-
