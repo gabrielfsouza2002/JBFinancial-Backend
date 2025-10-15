@@ -1,4 +1,4 @@
--- src/main/resources/db/migration/V2__create-table-grupo.sql
+-- src/main/resources/db/migration/V3__create-table-grupo.sql
 
 CREATE TABLE grupo (
                        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

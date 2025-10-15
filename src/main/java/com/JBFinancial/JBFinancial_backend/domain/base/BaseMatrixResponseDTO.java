@@ -18,10 +18,12 @@ public record BaseMatrixResponseDTO(
         String creditoDebito,
         String impactaCaixa,
         String impactaDre,
-        String descricao
-
+        String descricao,
+        String produto,
+        String cliente,
+        String fornecedor
 ) {
-    public BaseMatrixResponseDTO(Base base, String nomeDaConta, String tipoConta, String valor, String creditoDebito, String impactaCaixa, String impactaDre, String numeroConta, String grupo, String subgrupo) {
+    public BaseMatrixResponseDTO(Base base, String nomeDaConta, String tipoConta, String valor, String creditoDebito, String impactaCaixa, String impactaDre, String numeroConta, String grupo, String subgrupo, String produto, String cliente, String fornecedor) {
         this(
                 base.getData().getYear(),
                 base.getData().getMonthValue(),
@@ -36,7 +38,10 @@ public record BaseMatrixResponseDTO(
                 creditoDebito,
                 impactaCaixa,
                 impactaDre,
-                base.getDescricao()
+                base.getDescricao(),
+                produto,
+                cliente,
+                fornecedor
         );
     }
 }

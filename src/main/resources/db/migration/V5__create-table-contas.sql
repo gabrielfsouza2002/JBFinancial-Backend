@@ -1,4 +1,4 @@
--- src/main/resources/db/migration/V4__create-table-contas.sql
+-- src/main/resources/db/migration/V5__create-table-contas.sql
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
