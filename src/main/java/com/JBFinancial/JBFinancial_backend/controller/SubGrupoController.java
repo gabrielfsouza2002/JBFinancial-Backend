@@ -28,11 +28,16 @@ public class SubGrupoController {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
     public void saveSubgrupo(@Valid @RequestBody SubgrupoRequestDTO data) {
+        // Obtém o usuário autenticado do token JWT
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+
         Subgrupo subgrupo = new Subgrupo();
-        subgrupo.setIdUser(data.idUser());
+        subgrupo.setIdUser(userId); // Usa o userId do token, não do request
         subgrupo.setNome(data.nome());
         subgrupo.setIdGrupo(data.idGrupo());
-        subgrupo.setDigitoSubgrupo(generateNextSubgrupoDigit(data.idUser(), data.idGrupo()));
+        subgrupo.setDigitoSubgrupo(generateNextSubgrupoDigit(userId, data.idGrupo()));
         subgrupoRepository.save(subgrupo);
     }
 
@@ -54,8 +59,18 @@ public class SubGrupoController {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PutMapping("/{id}")
     public void updateSubgrupo(@PathVariable UUID id, @Valid @RequestBody SubgrupoRequestDTO data) {
+        // Obtém o usuário autenticado do token JWT
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+
         Subgrupo subgrupo = subgrupoRepository.findById(id).orElseThrow(() -> new RuntimeException("Subgrupo not found"));
-        subgrupo.setIdUser(data.idUser());
+
+        // Validação: apenas o dono do subgrupo pode atualizá-lo
+        if (!subgrupo.getIdUser().equals(userId)) {
+            throw new RuntimeException("Você não tem permissão para atualizar este subgrupo");
+        }
+
         subgrupo.setNome(data.nome());
         subgrupo.setIdGrupo(data.idGrupo());
         subgrupoRepository.save(subgrupo);
@@ -64,6 +79,18 @@ public class SubGrupoController {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @DeleteMapping("/{id}")
     public void deleteSubgrupo(@PathVariable UUID id) {
+        // Obtém o usuário autenticado do token JWT
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
+
+        Subgrupo subgrupo = subgrupoRepository.findById(id).orElseThrow(() -> new RuntimeException("Subgrupo not found"));
+
+        // Validação: apenas o dono do subgrupo pode deletá-lo
+        if (!subgrupo.getIdUser().equals(userId)) {
+            throw new RuntimeException("Você não tem permissão para deletar este subgrupo");
+        }
+
         subgrupoRepository.deleteById(id);
     }
 
