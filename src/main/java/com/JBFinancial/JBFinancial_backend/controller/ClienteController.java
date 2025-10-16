@@ -82,6 +82,7 @@ public class ClienteController {
         cliente.setNome_cliente(data.nome_cliente());
         cliente.setDescricao(data.descricao());
         cliente.setTipo_pessoa(data.tipo_pessoa());
+        cliente.setAtacado_varejo(data.atacado_varejo());
         clienteRepository.save(cliente);
     }
 

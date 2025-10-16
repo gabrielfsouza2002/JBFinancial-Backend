@@ -12,6 +12,7 @@ public record ClienteRequestDTO(
         String descricao,
 
         @NotBlank(message = "O tipo de pessoa é obrigatório")
-        String tipo_pessoa
-) {}
+        String tipo_pessoa,
 
+        String atacado_varejo
+) {}
