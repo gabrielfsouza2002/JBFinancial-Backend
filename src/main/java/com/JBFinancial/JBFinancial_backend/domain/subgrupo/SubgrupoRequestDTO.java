@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public record SubgrupoRequestDTO(
+        String idUser,
         @NotBlank(message = "O nome é obrigatório")
         String nome,
         @NotNull(message = "O id do grupo é obrigatório")

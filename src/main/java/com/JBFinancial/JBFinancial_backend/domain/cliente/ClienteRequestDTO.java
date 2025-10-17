@@ -2,6 +2,8 @@ package com.JBFinancial.JBFinancial_backend.domain.cliente;
 
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.UUID;
+
 public record ClienteRequestDTO(
         String userId,
 
@@ -14,5 +16,5 @@ public record ClienteRequestDTO(
         @NotBlank(message = "O tipo de pessoa é obrigatório")
         String tipo_pessoa,
 
-        String atacado_varejo
+        UUID id_segmento
 ) {}

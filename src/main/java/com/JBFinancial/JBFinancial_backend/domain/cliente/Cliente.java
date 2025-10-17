@@ -1,6 +1,8 @@
 package com.JBFinancial.JBFinancial_backend.domain.cliente;
 
+import com.JBFinancial.JBFinancial_backend.domain.segmento.Segmento;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.UUID;
@@ -31,25 +33,20 @@ public class Cliente {
     @Column(name = "tipo_pessoa", nullable = false)
     private String tipo_pessoa;
 
-    @Column(name = "atacado_varejo", nullable = true)
-    private String atacado_varejo;
+    @ManyToOne
+    @JoinColumn(name = "id_segmento", nullable = true)
+    private Segmento segmento;
 
     @PrePersist
     @PreUpdate
     private void convertToUpperCase() {
         this.nome_cliente = this.nome_cliente.toUpperCase();
         this.tipo_pessoa = this.tipo_pessoa.toUpperCase();
-        if (this.atacado_varejo != null) {
-            this.atacado_varejo = this.atacado_varejo.toUpperCase();
-        }
     }
 
     public Cliente(ClienteRequestDTO data) {
         this.nome_cliente = data.nome_cliente().toUpperCase();
         this.descricao = data.descricao();
         this.tipo_pessoa = data.tipo_pessoa().toUpperCase();
-        if (data.atacado_varejo() != null) {
-            this.atacado_varejo = data.atacado_varejo().toUpperCase();
-        }
     }
 }

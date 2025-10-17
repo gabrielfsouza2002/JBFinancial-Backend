@@ -1,7 +1,9 @@
 package com.JBFinancial.JBFinancial_backend.controller;
 
 import com.JBFinancial.JBFinancial_backend.domain.cliente.*;
+import com.JBFinancial.JBFinancial_backend.domain.segmento.Segmento;
 import com.JBFinancial.JBFinancial_backend.repositories.ClienteRepository;
+import com.JBFinancial.JBFinancial_backend.repositories.SegmentoRepository;
 import com.JBFinancial.JBFinancial_backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,9 @@ public class ClienteController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private SegmentoRepository segmentoRepository;
+
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
     public void saveCliente(@Valid @RequestBody ClienteRequestDTO data){
@@ -40,6 +45,16 @@ public class ClienteController {
 
         Cliente cliente = new Cliente(data);
         cliente.setUserId(userId);
+
+        if (data.id_segmento() != null) {
+            Segmento segmento = segmentoRepository.findById(data.id_segmento())
+                .orElseThrow(() -> new RuntimeException("Segmento não encontrado"));
+            if (!segmento.getUserId().equals(userId)) {
+                throw new RuntimeException("Usuário não autorizado a usar este segmento");
+            }
+            cliente.setSegmento(segmento);
+        }
+
         clienteRepository.save(cliente);
     }
 
@@ -82,7 +97,18 @@ public class ClienteController {
         cliente.setNome_cliente(data.nome_cliente());
         cliente.setDescricao(data.descricao());
         cliente.setTipo_pessoa(data.tipo_pessoa());
-        cliente.setAtacado_varejo(data.atacado_varejo());
+
+        if (data.id_segmento() != null) {
+            Segmento segmento = segmentoRepository.findById(data.id_segmento())
+                .orElseThrow(() -> new RuntimeException("Segmento não encontrado"));
+            if (!segmento.getUserId().equals(userId)) {
+                throw new RuntimeException("Usuário não autorizado a usar este segmento");
+            }
+            cliente.setSegmento(segmento);
+        } else {
+            cliente.setSegmento(null);
+        }
+
         clienteRepository.save(cliente);
     }
 

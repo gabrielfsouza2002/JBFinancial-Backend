@@ -10,3 +10,4 @@ ALTER TABLE cliente ADD CONSTRAINT check_atacado_varejo
 -- Uncomment the line below if you want to set a default for existing records
 -- UPDATE cliente SET atacado_varejo = 'VAREJO' WHERE atacado_varejo IS NULL;
 
+
