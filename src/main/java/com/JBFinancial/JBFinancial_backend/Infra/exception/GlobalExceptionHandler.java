@@ -24,6 +24,8 @@ public class GlobalExceptionHandler {
             // Verificações mais específicas primeiro
             if (message.contains("fk_cliente_segmento") || message.contains("table \"segmento\"")) {
                 errorMessage = "O segmento não pode ser excluído pois há uso em clientes. Se desejar, é possível atualizar os dados.";
+            } else if (message.contains("fk_produto_categoria") || message.contains("table \"categoria_produto\"")) {
+                errorMessage = "A categoria não pode ser excluída pois há uso em produtos. Se desejar, é possível atualizar os dados.";
             } else if (message.contains("fk_conta") || message.contains("table \"contas\"")) {
                 errorMessage = "A conta não pode ser excluída pois há uso em lançamentos. Se desejar, é possível atualizar os dados.";
             } else if (message.contains("fk_base_cliente") || message.contains("fk_cliente") || message.contains("table \"cliente\"")) {

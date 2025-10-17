@@ -1,5 +1,6 @@
 package com.JBFinancial.JBFinancial_backend.domain.produto;
 
+import com.JBFinancial.JBFinancial_backend.domain.categoriaProduto.CategoriaProduto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,21 +33,30 @@ public class Produto {
     @Column(name = "descricao", nullable = false, length = 255)
     private String descricao;
 
-    @Column(name = "categoria", nullable = false, length = 50)
+    @Column(name = "categoria", length = 50)
     private String categoria;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "categoria_id", referencedColumnName = "id")
+    private CategoriaProduto categoriaProduto;
+
 
     @PrePersist
     @PreUpdate
     private void convertToUpperCase() {
         this.nome_produto = this.nome_produto.toUpperCase();
         this.codigo = this.codigo.toUpperCase();
-        this.categoria = this.categoria.toUpperCase();
+        if (this.categoria != null) {
+            this.categoria = this.categoria.toUpperCase();
+        }
     }
 
     public Produto(ProdutoRequestDTO data) {
         this.codigo = data.codigo().toUpperCase();
         this.nome_produto = data.nome_produto().toUpperCase();
         this.descricao = data.descricao();
-        this.categoria = data.categoria().toUpperCase();
+        if (data.categoria() != null) {
+            this.categoria = data.categoria().toUpperCase();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.JBFinancial.JBFinancial_backend.controller;
 
 import com.JBFinancial.JBFinancial_backend.domain.produto.*;
+import com.JBFinancial.JBFinancial_backend.repositories.CategoriaProdutoRepository;
 import com.JBFinancial.JBFinancial_backend.repositories.ProdutoRepository;
 import com.JBFinancial.JBFinancial_backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class ProdutoController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CategoriaProdutoRepository categoriaProdutoRepository;
+
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
     public void saveProduto(@Valid @RequestBody ProdutoRequestDTO data){
@@ -40,6 +44,13 @@ public class ProdutoController {
 
         Produto produto = new Produto(data);
         produto.setUserId(userId);
+
+        // Set categoria relationship if categoriaId is provided
+        if (data.categoriaId() != null) {
+            produto.setCategoriaProduto(categoriaProdutoRepository.findById(data.categoriaId())
+                    .orElseThrow(() -> new RuntimeException("Categoria não encontrada")));
+        }
+
         produtoRepository.save(produto);
     }
 
@@ -81,7 +92,22 @@ public class ProdutoController {
         produto.setCodigo(data.codigo());
         produto.setNome_produto(data.nome_produto());
         produto.setDescricao(data.descricao());
-        produto.setCategoria(data.categoria());
+
+        // Atualizar categoria antiga (String) apenas se fornecida
+        if (data.categoria() != null) {
+            produto.setCategoria(data.categoria());
+        } else {
+            produto.setCategoria(null);
+        }
+
+        // Set categoria relationship if categoriaId is provided
+        if (data.categoriaId() != null) {
+            produto.setCategoriaProduto(categoriaProdutoRepository.findById(data.categoriaId())
+                    .orElseThrow(() -> new RuntimeException("Categoria não encontrada")));
+        } else {
+            produto.setCategoriaProduto(null);
+        }
+
         produtoRepository.save(produto);
     }
 

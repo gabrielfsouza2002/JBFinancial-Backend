@@ -3,6 +3,8 @@ package com.JBFinancial.JBFinancial_backend.domain.produto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.UUID;
+
 public record ProdutoRequestDTO(
         String userId,
 
@@ -18,7 +20,7 @@ public record ProdutoRequestDTO(
         @Size(max = 255, message = "A descrição deve ter no máximo 255 caracteres")
         String descricao,
 
-        @NotBlank(message = "A categoria é obrigatória")
-        @Size(max = 50, message = "A categoria deve ter no máximo 50 caracteres")
-        String categoria
+        String categoria,
+
+        UUID categoriaId
 ) {}
