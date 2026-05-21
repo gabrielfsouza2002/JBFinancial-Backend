@@ -39,4 +39,7 @@ public interface BaseRepository extends JpaRepository<Base, UUID> {
 
     @Query("SELECT b FROM base b JOIN FETCH b.conta c JOIN FETCH c.grupo g JOIN FETCH c.subgrupo s WHERE b.userId = :userId")
     List<Base> findByUserIdWithDetails(@Param("userId") String userId);
+
+    @Query("SELECT b FROM base b JOIN FETCH b.conta c JOIN FETCH c.grupo g JOIN FETCH c.subgrupo s WHERE b.userId = :userId AND YEAR(b.data) = :year AND b.impactaDre = true")
+    List<Base> findByUserIdAndYearForDre(@Param("userId") String userId, @Param("year") int year);
 }

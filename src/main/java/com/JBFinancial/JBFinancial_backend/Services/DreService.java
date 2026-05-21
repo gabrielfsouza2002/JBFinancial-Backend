@@ -9,6 +9,8 @@ import com.JBFinancial.JBFinancial_backend.repositories.ContaRepository;
 import com.JBFinancial.JBFinancial_backend.repositories.GrupoRepository;
 import com.JBFinancial.JBFinancial_backend.repositories.SubgrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.text.DecimalFormat;
 
@@ -41,16 +43,17 @@ public class DreService {
 
     private static final DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
 
+    @Cacheable(value = "dreCalculate", key = "#userId + ':' + #year")
     public List<DreResponseDTO> calculateDre(String userId, int year) {
-        List<Base> baseEntries = baseRepository.findByUserId(userId).stream()
-                .filter(base -> base.getData().getYear() == year && base.getImpactaDre())
-                .collect(Collectors.toList());
+        // Otimização: Usar query com JOIN FETCH para carregar Conta, Grupo e Subgrupo de uma vez
+        List<Base> baseEntries = baseRepository.findByUserIdAndYearForDre(userId, year);
 
         Map<UUID, Double> annualTotals = new HashMap<>();
         Map<UUID, Map<Integer, Double>> monthlyTotals = new HashMap<>();
 
         for (Base base : baseEntries) {
-            Conta conta = contaRepository.findById(base.getContaId()).orElseThrow();
+            // Conta já foi carregada com JOIN FETCH, sem queries adicionais
+            Conta conta = base.getConta();
             UUID groupId = conta.getIdGrupo();
             UUID subGroupId = conta.getIdSubgrupo();
             int month = base.getData().getMonthValue();
@@ -115,10 +118,11 @@ public class DreService {
         return values;
     }
 
+    @Cacheable(value = "dreTotals", key = "#userId + ':' + #year")
     public List<DreGroupSubgroupResponseDTO> getTotalsByGroupAndSubgroup(String userId, int year) {
-        List<Base> baseEntries = baseRepository.findByUserId(userId).stream()
-                .filter(base -> base.getData().getYear() == year && base.getImpactaDre())
-                .collect(Collectors.toList());
+        // Otimização: Usar query com JOIN FETCH para carregar Conta, Grupo e Subgrupo de uma vez
+        // Evita N queries individuais de findById
+        List<Base> baseEntries = baseRepository.findByUserIdAndYearForDre(userId, year);
 
         List<Grupo> grupos = grupoRepository.findAll();
         List<Subgrupo> subgrupos = subgrupoRepository.findByIdUserOrIdUserIsNull(userId);
@@ -127,9 +131,10 @@ public class DreService {
         Map<String, Map<Integer, Double>> monthlyTotals = new HashMap<>();
 
         for (Base base : baseEntries) {
-            Conta conta = contaRepository.findById(base.getContaId()).orElseThrow();
-            Grupo grupo = grupos.stream().filter(g -> g.getId().equals(conta.getIdGrupo())).findFirst().orElseThrow();
-            Subgrupo subgrupo = subgrupos.stream().filter(s -> s.getId().equals(conta.getIdSubgrupo())).findFirst().orElseThrow();
+            // Conta já foi carregada com JOIN FETCH, sem queries adicionais
+            Conta conta = base.getConta();
+            Grupo grupo = conta.getGrupo();
+            Subgrupo subgrupo = conta.getSubgrupo();
             String groupKey = grupo.getNome();
             String subgroupKey = subgrupo.getNome();
             int month = base.getData().getMonthValue();
@@ -182,5 +187,10 @@ public class DreService {
         return new DreGroupSubgroupResponseDTO(
                 groupTotals
         );
+    }
+
+    @CacheEvict(value = {"dreCalculate", "dreTotals"}, allEntries = true)
+    public void clearDreCache() {
+        // Método vazio para limpar o cache quando dados mudam
     }
 }

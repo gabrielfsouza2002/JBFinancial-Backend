@@ -37,7 +37,16 @@ public class SubGrupoController {
         subgrupo.setIdUser(userId); // Usa o userId do token, não do request
         subgrupo.setNome(data.nome());
         subgrupo.setIdGrupo(data.idGrupo());
-        subgrupo.setDigitoSubgrupo(generateNextSubgrupoDigit(userId, data.idGrupo()));
+
+        // Gera o próximo dígito automaticamente
+        String digitoSubgrupo = generateNextSubgrupoDigit(userId, data.idGrupo());
+
+        // Validação extra: verifica se já existe globalmente no grupo (mesmo que a constraint do banco impeça)
+        if (subgrupoRepository.existsByIdGrupoAndDigitoSubgrupo(data.idGrupo(), digitoSubgrupo)) {
+            throw new RuntimeException("Já existe um subgrupo com este código para este grupo.");
+        }
+
+        subgrupo.setDigitoSubgrupo(digitoSubgrupo);
         subgrupoRepository.save(subgrupo);
     }
 
@@ -72,7 +81,14 @@ public class SubGrupoController {
         }
 
         subgrupo.setNome(data.nome());
-        subgrupo.setIdGrupo(data.idGrupo());
+
+        // Se o grupo foi alterado, recalcula o digitoSubgrupo
+        if (!subgrupo.getIdGrupo().equals(data.idGrupo())) {
+            subgrupo.setIdGrupo(data.idGrupo());
+            String novoDigito = generateNextSubgrupoDigit(userId, data.idGrupo());
+            subgrupo.setDigitoSubgrupo(novoDigito);
+        }
+
         subgrupoRepository.save(subgrupo);
     }
 
@@ -95,7 +111,9 @@ public class SubGrupoController {
     }
 
     private String generateNextSubgrupoDigit(String userId, UUID idGrupo) {
-        long count = subgrupoRepository.countByIdUserAndIdGrupo(userId, idGrupo);
+        // Conta TODOS os subgrupos do grupo (incluindo os com idUser = null)
+        // O digitoSubgrupo deve ser único globalmente por grupo
+        long count = subgrupoRepository.countByIdGrupo(idGrupo);
         return String.valueOf((count + 1) % 10);
     }
 }

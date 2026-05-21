@@ -10,4 +10,7 @@ public interface SubgrupoRepository extends JpaRepository<Subgrupo, UUID> {
     List<Subgrupo> findByIdUser(String userId);
     List<Subgrupo> findByIdUserOrIdUserIsNull(String userId);
     long countByIdUserAndIdGrupo(String userId, UUID idGrupo);
+    long countByIdGrupo(UUID idGrupo);
+    boolean existsByIdGrupoAndDigitoSubgrupo(UUID idGrupo, String digitoSubgrupo);
+    boolean existsByIdUserAndIdGrupoAndDigitoSubgrupo(String idUser, UUID idGrupo, String digitoSubgrupo);
 }

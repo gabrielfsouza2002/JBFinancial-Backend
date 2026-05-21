@@ -68,6 +68,7 @@ public class BaseController {
         Base baseData = new Base(data);
         baseData.setUserId(userId);
         repository.save(baseData);
+        dreService.clearDreCache();
     }
 
 
@@ -110,6 +111,7 @@ public class BaseController {
         baseData.setIdCliente(data.idCliente());
         baseData.setIdFornecedor(data.idFornecedor());
         repository.save(baseData);
+        dreService.clearDreCache();
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -127,6 +129,7 @@ public class BaseController {
         }
 
         repository.deleteById(id);
+        dreService.clearDreCache();
     }
 
 
@@ -181,5 +184,6 @@ public class BaseController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String userId = userRepository.findByLogin(userDetails.getUsername()).getId();
         baseService.importBase(file, userId);
+        dreService.clearDreCache();
     }
 }
